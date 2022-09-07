@@ -8,7 +8,7 @@ const Store = create((set, get) => ({
 }))
 
 export const sideBar = create((set, get) => ({
-    active: '/admin'
+    active: '/'
 }))
 
 export const AdminDashboard = create((set, get) => ({
