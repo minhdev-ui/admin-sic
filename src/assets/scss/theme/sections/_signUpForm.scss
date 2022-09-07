@@ -1,0 +1,247 @@
+.flex-col {
+  display: flex !important;
+  // gap: 8px;
+  flex-direction: column !important;
+  .flex-child {
+    padding: 2px 4px;
+  }
+}
+.gridCol-2 {
+  display: grid;
+  grid-template-columns: auto auto;
+  // gap: 8px 20px;
+}
+.title {
+  font-size: 16px;
+}
+textarea,
+input {
+  outline: none;
+  transition: all 0.2s linear;
+  font-size: 18px !important;
+  color: #000;
+  border: 1px solid transparent;
+  border-bottom: 1px solid #ccc;
+  &:focus {
+    border: 1px solid #373888;
+    border-radius: 5px;
+  }
+}
+
+textarea {
+  border-radius: 5px;
+  border: 1px solid #373888;
+}
+
+.signUpForm {
+  * {
+    margin: 0;
+    padding: 0;
+  }
+  z-index: 10000;
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  .closeBtn {
+    position: absolute;
+    right: 0;
+    transform: translateX(50%);
+    top: 0;
+    margin: 2% 4%;
+    font-size: 25px;
+    transition: all 0.2s linear;
+    z-index: 10001;
+    cursor: pointer;
+    &:hover {
+      color: #373888;
+    }
+  }
+
+  .signUpForm__footer {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    color: #fff;
+    margin: 0 -10px;
+    .button {
+      padding: 4px 18px;
+      flex: 1 0;
+      margin: 10px;
+    }
+  }
+  .signUpForm-inner {
+    // margin:auto;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0 auto;
+    width: 100% !important;
+    background-color: #fff;
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    text-align: left;
+    position: relative;
+  }
+  .signUpForm--left {
+    grid-column: 1/ 5;
+    padding: 30px 40px;
+    background: url("../../../images/signUpLeft.png") bottom center/ cover
+      no-repeat;
+    h3 {
+      font-size: 35px;
+      margin-bottom: 20px;
+    }
+    p {
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 130%;
+      font-size: 16px;
+      font-style: italic;
+    }
+    .contact {
+      display: flex;
+      flex-direction: column;
+    }
+    .contact__info {
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      font-size: 18px;
+      margin-top: 6%;
+      &:hover {
+        color: #373888;
+        transition: all 0.2s linear;
+      }
+      span {
+        flex: 1;
+        padding-left: 10px;
+      }
+    }
+    .contact__icon {
+      display: inline-block;
+      color: #373888;
+    }
+  }
+  .signUpForm--right {
+    form.flex-col {
+      margin-top: 30px;
+      input {
+        margin: 0 10px;
+      }
+      // gap: 30px;
+    }
+    padding: 30px 40px;
+    grid-column: 5/ 12;
+    position: relative;
+    input {
+      width: auto !important;
+      font-size: 14px !important;
+      &[type="checkbox"] {
+        margin-right: 10px;
+      }
+    }
+
+    .basic-info {
+      // gap: 35px;
+      margin: -30px -10px 0;
+    }
+
+    .basic-info__item {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      margin: 30px 10px 0;
+      
+      .title {
+        position: absolute;
+        left: 10px;
+        top: 6px;
+        transition: 0.2s linear;
+        cursor: text;
+      }
+      input:not(:placeholder-shown) + .title,
+      input:focus + .title {
+        top: -8px;
+        display: inline-block;
+        color: #000;
+        background-color: #fff;
+        line-height: 1 !important;
+        cursor: default;
+      }
+    }
+    .basic-info__item input,
+    .message__text {
+      width: 100%;
+      resize: none;
+      padding: 12px 10px;
+    }
+    .choose-info{
+      position:relative;
+    }
+  }
+  .errorMessage {
+    position: absolute;
+    bottom: -17px;
+    left: 0;
+  }
+}
+
+@media screen and (max-width: 1080px) {
+  .signUpForm {
+    .signUpForm--left,
+    .signUpForm--right {
+      padding: 15px 20px;
+    }
+    .signUpForm--left {
+      grid-column: 1/ 4;
+    }
+    .signUpForm--right {
+      grid-column: 4/ 12;
+      margin-left: 20px;
+    }
+  }
+}
+@media screen and (max-width: 850px) {
+  .closeBtn {
+    right: 0 !important;
+    svg {
+      fill: #fff;
+    }
+  }
+  .signUpForm {
+    .signUpForm-inner {
+      height: 100vh;
+      max-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      border-radius: 0;
+      overflow-y: scroll;
+    }
+    .signUpForm--left {
+      width: 100%;
+    }
+    .signUpForm--right {
+      padding: 15px;
+      margin: 0;
+      .gridCol-2 {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+    .contact {
+      flex-direction: row !important;
+      // gap: 20px;
+      .contact__info {
+        margin-right: 20px !important;
+      }
+      span {
+        display: none;
+      }
+    }
+    .errorMessage {
+      font-size: 14px;
+      color: red;
+    }
+  }
+}

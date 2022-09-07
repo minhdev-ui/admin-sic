@@ -1,0 +1,2 @@
+export const STORE_MEMBER = "STORE_MEMBER";
+export const STORE_MEMBER_TODAY = "STORE_MEMBER_TODAY";

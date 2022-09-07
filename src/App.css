@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'Square721 BT';
+    src: url('/public/font/Squ721Rm.ttf');
+}
+
+body {
+    font-family: 'Square721 BT' !important;
+}

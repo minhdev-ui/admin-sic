@@ -1,0 +1,73 @@
+.my-team-name {
+    text-align: center;
+    margin: 0 auto;
+    display: inline-block;
+    font-weight: 0;
+}
+
+.my-team-images {
+    margin: 0 auto;
+    border-radius: 50%;
+    border: solid 3px #19212d;
+}
+
+.reveal-from-left, .reveal-from-right {
+    margin-top: 90px;
+    margin-bottom: -85px;
+}
+
+.cta .section-inner {
+    margin-top: 70px;
+}
+
+
+.slide-container {
+  width: 896px;
+  height: 510px;
+}
+
+.slide-container-left {
+  /* width: 896px; */
+  height: 510px;
+  margin-left: -350px;
+}
+
+.each-slide {
+  width: 896px;
+  height: 504px;
+}
+
+.fb-icon {
+  text-align: center;
+  margin: auto;
+  color: #45A2F9;
+  font-size: 130%;
+}
+
+
+@media only screen and (max-width: 600px) {
+  .reveal-from-left, .reveal-from-right {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  .slide-container {
+    width: 100%;
+    height: 252px;
+  }
+
+  .slide-container-left {
+    width: 100%;
+    height: 252px;
+    margin-left: auto;
+  }
+
+  .each-slide {
+    width: 100%;
+    height: 252px;
+  }
+
+  div.tiles-item.reveal-from-bottom.is-revealed {
+    order: -1;
+  }
+}
