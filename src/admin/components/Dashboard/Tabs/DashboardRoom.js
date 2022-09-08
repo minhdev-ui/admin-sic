@@ -13,10 +13,9 @@ const DashboardRoom = ({ Data, config, isBusy }) => {
   const [open, setOpen] = useState(true);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    setDetail({
-      msv: Data,
-    });
-  }, [Data]);
+    const response = getDetailData();
+    response.then(res => setDetail({ ...res.data, msv: Data }))
+  }, [Data, isBusy]);
 
   console.log(detail);
 
@@ -26,6 +25,11 @@ const DashboardRoom = ({ Data, config, isBusy }) => {
       setData(res.data);
     });
   };
+
+  const getDetailData = async () => {
+    const response = await axios.get(`${Config.API_URL}/api/room/`, { params: { msv: Data } });
+    return response;
+  }
 
   useEffect(() => {
     setLoading(true);
@@ -43,6 +47,10 @@ const DashboardRoom = ({ Data, config, isBusy }) => {
       return;
     }
   }, [isBusy]);
+
+  const removeRoom = (_id) => {
+    axios.patch(`${Config.API_URL}/api/room/${_id}`, { entered: false }).then(() => getData());
+  }
 
   return (
     <div className="Dashboard-room">
@@ -91,7 +99,9 @@ const DashboardRoom = ({ Data, config, isBusy }) => {
               title: "Chức Năng",
               dataIndex: ["_id"],
               render(value) {
-                <MdRemoveCircle onClick={() => {}} />;
+                return (
+                    <MdRemoveCircle onClick={() => { removeRoom(value) }} />
+                  )
               },
             },
           ]}

@@ -73,7 +73,7 @@ const Login = () => {
                 duration: 2,
               });
               localStorage.setItem("token", tokenLogin.token);
-              history.push("/admin");
+              history.push("/");
             } else {
               createNotification("error", {
                 message: "Lỗi Đăng Nhập",

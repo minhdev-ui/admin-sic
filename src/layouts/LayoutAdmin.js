@@ -36,7 +36,6 @@ const items = [
 const LayoutAdmin = ({ children }) => {
   const classes = classNames("site-admin");
   const history = useHistory();
-  const sideBarAdmin = sideBar((state) => state.active);
   const [collapse, setCollapse] = useState(false);
   return (
     <section className={classes}>
@@ -50,7 +49,7 @@ const LayoutAdmin = ({ children }) => {
         </div>
         <Menu
           theme="dark"
-          defaultSelectedKeys={[sideBarAdmin]}
+          defaultSelectedKeys={['/']}
           items={items}
           mode='inline'
           onSelect={(key) => {
