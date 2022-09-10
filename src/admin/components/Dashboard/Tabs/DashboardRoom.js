@@ -6,61 +6,84 @@ import { BarcodeScanner } from "react-usb-barcode-scanner";
 import FormModal from "../components/formModal";
 import Config from "../../../../db.config";
 import { Box } from "@mui/material";
+import { async } from "@firebase/util";
+import createNotification from "../../../../components/elements/Nofication";
+import BarcodeReader from "react-barcode-reader";
 
-const DashboardRoom = ({ Data, config, isBusy }) => {
+const DashboardRoom = () => {
   const [data, setData] = useState([]);
-  const [detail, setDetail] = useState({});
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [msv, setMsv] = useState('');
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    const response = getDetailData();
-    response.then(res => setDetail({ ...res.data, msv: Data }))
-  }, [Data, isBusy]);
 
-  console.log(detail);
-
-  const getData = () => {
-    axios.get(`${Config.API_URL}/api/room`).then((res) => {
-      setLoading(false);
-      setData(res.data);
-    });
+  const handleScanner = (msv) => {
+    setOpen(true);
+    setMsv(msv);
+    // getDetailData();
   };
 
-  const getDetailData = async () => {
-    const response = await axios.get(`${Config.API_URL}/api/room/`, { params: { msv: Data } });
-    return response;
-  }
-
-  useEffect(() => {
+  const getData = async () => {
     setLoading(true);
-    getData();
-  }, []);
-
-  const closeForm = () => {
-    setOpen(false);
+    const response = await axios.get(`${Config.API_URL}/api/room`);
+    return response;
   };
 
   useEffect(() => {
-    if (isBusy) {
-      setOpen(true);
-    } else {
-      return;
+    if(open === false) {
+      const responseData = getData();
+      responseData.then((res) => {
+        setData(res.data);
+        setLoading(false);
+      });
+    }else {
+      return
     }
-  }, [isBusy]);
+  }, [open]);
 
   const removeRoom = (_id) => {
-    axios.patch(`${Config.API_URL}/api/room/${_id}`, { entered: false }).then(() => getData());
-  }
+    axios
+      .patch(`${Config.API_URL}/api/room/${_id}`, { entered: false })
+      .then(() => {
+        const responseData = getData();
+        responseData.then((res) => {
+          setData(res.data);
+          setLoading(false);
+        });
+      });
+  };
+
+  console.log(msv);
+
+  const handleCreate = (obj) => {
+    setOpen(false)
+    axios(`${Config.API_URL}/api/room/add`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      data: obj,
+    })
+      .then((res) => {
+        createNotification("success", { message: "Đã Thêm" });
+        const responseData = getData();
+        responseData.then((res) => {
+          setData(res.data);
+          setLoading(false);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        createNotification("error", { message: "Lỗi" });
+      });
+  };
 
   return (
     <div className="Dashboard-room">
-      <BarcodeScanner config={config} />
-      {isBusy ? (
-        <div>....</div>
+      <BarcodeReader onScan={handleScanner} />
+      {open ? (
+        <FormModal visible={open} Msv={msv} handleCreate={handleCreate} onClose={() => setOpen(false)}/>
       ) : (
-        Data !== "" && (
-          <FormModal visible={open} onCancel={closeForm} obj={detail} />
-        )
+        <div>....</div>
       )}
       <div className="inner-room">
         <h3 className="inner-room-form--heading">
@@ -100,8 +123,13 @@ const DashboardRoom = ({ Data, config, isBusy }) => {
               dataIndex: ["_id"],
               render(value) {
                 return (
-                    <MdRemoveCircle onClick={() => { removeRoom(value) }} />
-                  )
+                  <MdRemoveCircle
+                    style={{ cursor: "pointer", fontSize: "20px" }}
+                    onClick={() => {
+                      removeRoom(value);
+                    }}
+                  />
+                );
               },
             },
           ]}

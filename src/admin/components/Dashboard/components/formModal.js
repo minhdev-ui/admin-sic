@@ -15,45 +15,36 @@ import { useState } from "react";
 import axios from "axios";
 import createNotification from "../../../../components/elements/Nofication";
 import handleUploadImage from "../../../../utils/uploadImage";
+import moment from 'moment'
 
 const FormModal = (props) => {
-  const { visible, onCancel, obj } = props;
-  const [img, setImg] = useState(obj.image || "");
-  const [msv, setMsv] = useState(obj.msv || "");
-  const [name, setName] = useState(obj.name || "");
-  const [gender, setGender] = useState(obj.gender || 0);
-  const [classs, setClasss] = useState(obj.class || "");
-  const [date, setDate] = useState(obj.date || "");
+  const { visible, handleCreate, Msv = "", onClose } = props;
+  const [obj, setObj] = useState({});
+  const [img, setImg] = useState(obj?.image || "");
+  const [msv, setMsv] = useState(Msv);
+  const [name, setName] = useState(obj?.name || "");
+  const [gender, setGender] = useState(obj?.gender || 0);
+  const [classs, setClasss] = useState(obj?.class || "");
+  const [date, setDate] = useState(obj?.date || null);
   const [unlock, setUnlock] = useState(true);
   const [imagePreview, setImagePreview] = useState("");
 
-
-  const handleCreate = () => {
-    const obj = {
-      image: img,
-      msv: msv.replace(/\n/g, ""),
-      name: name,
-      gender: gender,
-      class: classs,
-      date: date.toLocaleString(),
-      entered: true,
-    };
-
-    axios
-      .post(`${config.API_URL}/api/room/add`, obj)
-      .then((res) => {
-        createNotification("success", { message: "Đã Thêm" });
-      })
-      .catch((err) => {
-        console.log(err);
-        createNotification("error", { message: "Lỗi" });
-      });
-  };
+  useEffect(() => {
+    setMsv(obj?.msv || Msv);
+  }, [Msv, obj?.msv]);
 
   useEffect(() => {
-    setMsv(obj.msv);
-  }, [obj.msv]);
-  console.log(visible);
+    const getDetailData = async () => {
+      await axios
+        .get(`${config.API_URL}/api/room/`, {
+          params: { msv: Msv },
+        })
+        .then((res) => setObj(...res.data));
+    };
+    if(Msv !== ""){
+      getDetailData();
+    }
+  }, [Msv]);
 
   function handlePreviewImage(e) {
     const file = e.target.files[0];
@@ -64,10 +55,23 @@ const FormModal = (props) => {
   return (
     <Modal
       visible={visible}
-      title="Create a new collection"
+      title={`Thông Tin Của Sinh Viên ${obj?.msv ? obj?.name : msv}`}
       okText="Create"
-      onCancel={onCancel}
-      onOk={handleCreate}
+      onCancel={onClose}
+      destroyOnClose
+      closable={false}
+      maskClosable={false}
+      onOk={() => {
+        handleCreate({
+          image: img,
+          msv: msv.replace(/\n/g, ""),
+          name: name,
+          gender: gender,
+          class: classs,
+          date: date,
+          entered: true,
+        });
+      }}
     >
       <Form
         labelCol={{ span: 4 }}
@@ -94,7 +98,7 @@ const FormModal = (props) => {
         <Form.Item label="Mã SV">
           <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
             <Input
-              value={msv}
+              value={msv || obj?.msv}
               disabled={unlock}
               onChange={(e) => setMsv(e.target.value)}
             />{" "}
@@ -112,15 +116,15 @@ const FormModal = (props) => {
           </div>
         </Form.Item>
         <Form.Item label="Họ Tên">
-          <Input value={name} onChange={(e) => setName(e.target.value)} />
+          <Input value={name || obj?.name} onChange={(e) => setName(e.target.value)} />
         </Form.Item>
         <Form.Item label="Giới Tính">
-          <Radio.Group onChange={(e) => setGender(e.target.value)}>
-            <Radio value={0} checked={gender === 0 ? true : false}>
+          <Radio.Group onChange={(e) => setGender(e.target.value)} name='radiogroup' value={0}>
+            <Radio value={0}>
               {" "}
               Nam{" "}
             </Radio>
-            <Radio value={1} checked={gender === 1 ? true : false}>
+            <Radio value={1}>
               {" "}
               Nữ{" "}
             </Radio>
@@ -129,14 +133,15 @@ const FormModal = (props) => {
         <Form.Item label="Ngày Sinh">
           <DatePicker
             size="small"
-            onChange={(e) => setDate(e.date().toLocaleString())}
+            onChange={(e) => setDate(e)}
+            value={obj?.date ? moment(obj?.date) : date}
           />
         </Form.Item>
         <Form.Item label="Lớp">
           <Input
             maxLength={10}
             width={100}
-            value={classs}
+            value={classs || obj?.class}
             onChange={(e) => setClasss(e.target.value)}
           />
         </Form.Item>

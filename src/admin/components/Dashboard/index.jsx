@@ -14,12 +14,12 @@ import DashboardCtv from "./Tabs/DashboardCtv";
 import DashboardEvent from "./Tabs/DashboardEvent";
 import DashboardRoom from "./Tabs/DashboardRoom";
 
-const DashboardTab = ({ props, indexTab }) => {
+const DashboardTab = ({ indexTab }) => {
   switch (indexTab) {
     case 1:
       return (
         <>
-          <DashboardRoom Data={props.data} config={props.config} isBusy={props.isBusy} />
+          <DashboardRoom />
         </>
       );
     case 2:
@@ -37,11 +37,10 @@ const DashboardTab = ({ props, indexTab }) => {
   }
 };
 
-const Dashboard = (props) => {
+const Dashboard = () => {
   const tabDashboard = AdminDashboard((state) => state.dashboard);
   const currentTab = AdminDashboard((state) => state.currentTab);
   const [indexTab, setIndexTab] = useState(currentTab);
-  const history = useHistory();
   console.log(indexTab);
   return (
     <section>
@@ -66,7 +65,7 @@ const Dashboard = (props) => {
         })}
       </div>
       <div className="Dashboard-main-content">
-        <DashboardTab props={props} indexTab={indexTab} />
+        <DashboardTab indexTab={indexTab} />
       </div>
     </section>
   );
