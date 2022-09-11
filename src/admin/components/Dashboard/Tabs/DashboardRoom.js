@@ -83,7 +83,7 @@ const DashboardRoom = () => {
       {open ? (
         <FormModal visible={open} Msv={msv} handleCreate={handleCreate} onClose={() => setOpen(false)}/>
       ) : (
-        <div>....</div>
+        <div></div>
       )}
       <div className="inner-room">
         <h3 className="inner-room-form--heading">

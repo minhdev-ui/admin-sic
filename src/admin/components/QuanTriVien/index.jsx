@@ -1,6 +1,5 @@
 import {
   Button,
-  Modal,
   Paper,
   Stack,
   TableBody,
@@ -12,7 +11,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
-import { Field, Form, Formik } from "formik";
+import { Formik } from "formik";
 import { useEffect, useState } from "react";
 import { AiFillDelete, AiFillPlusCircle } from "react-icons/ai";
 import { BsFillPenFill } from "react-icons/bs";
@@ -25,11 +24,20 @@ import createNotification from "../../../components/elements/Nofication";
 import generateUUID from "../../store/uuid";
 import { Table, Tag } from "antd";
 import { SwapOutlined } from "@ant-design/icons";
+import {
+  Checkbox,
+  DatePicker,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  Radio,
+  Upload,
+} from "antd";
 const QTV = () => {
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState([]);
   const [token, setToken] = useState(generateUUID());
-  const [loading, setLoading] = useState(false);
   useEffect(() => {
     getData();
   }, []);
@@ -39,16 +47,8 @@ const QTV = () => {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
-  const formStyle = {
-    width: "40%",
-    padding: "45px 25px",
-    backgroundColor: "#191A2E",
-    borderRadius: "8px",
-  };
   const getData = () => {
-    setLoading(true);
     axios.get(`${config.API_URL}/api/admin`).then((res) => {
-      setLoading(false);
       setData(res.data);
     });
   };
@@ -62,15 +62,23 @@ const QTV = () => {
     return check === undefined ? false : true;
   };
   const handleSubmit = async (obj) => {
-    axios.post(`${config.API_URL}/api/admin/add`, {
-      ...obj,
-      online: false,
-      token: checkToken(),
-    });
+    if(checkMsv(msv)){
+      createNotification('error', {message: 'Msv này hiện đã là admin'})
+    }else{
+      axios.post(`${config.API_URL}/api/admin/add`, {
+        ...obj,
+        online: false,
+        token: checkToken(),
+      });
+    }
+    handleCloseModal();
   };
-  const refresh = () => {
-    getData();
-  };
+  const [msv, setMsv] = useState('');
+  const [name, setName] = useState("");
+  const [gender, setGender] = useState(0);
+  const [classs, setClasss] = useState("");
+  const [username, setUserName] = useState('');
+  const [password, setPassword] = useState('');
   return (
     <>
       <Button
@@ -83,155 +91,95 @@ const QTV = () => {
         New <AiFillPlusCircle />
       </Button>
       <Modal
-        open={openModal}
-        onClose={handleCloseModal}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
+        visible={openModal}
+        title={`Thông Tin Của Admin`}
+        okText="Create"
+        onCancel={handleCloseModal}
+        destroyOnClose
+        closable={false}
+        maskClosable={false}
+        onOk={() => handleSubmit({
+          msv: msv,
+          name: name,
+          username: username,
+          password: password,
+          gender: gender,
+          role: 'Admin'
+        })}
       >
-        <Formik
-          initialValues={{
-            msv: "",
-            name: "",
-            username: "",
-            password: "",
-            role: "",
-          }}
-          validationSchema={Yup.object({
-            msv: Yup.string().required("Vui Lòng Điền Trường Này"),
-            name: Yup.string().required("Vui Lòng Điền Trường Này"),
-            username: Yup.string().required("Vui Lòng Điền Trường Này"),
-            password: Yup.string().required("Vui Lòng Điền Trường Này"),
-            role: Yup.string().required("Vui Lòng Điền Trường Này"),
-          })}
-          onSubmit={(values) => {
-            checkMsv()
-              ? createNotification("error", { message: "Đã Đăng Ký" })
-              : handleSubmit(values)
-                  .then(
-                    createNotification("success", {
-                      message: "Thêm Thành Công",
-                    })
-                  )
-                  .catch((err) => {
-                    createNotification("error", { message: "Lỗi" });
-                    console.log(err);
-                  });
-          }}
+        <Form
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 14 }}
+          layout="horizontal"
+          // onValuesChange={onFormLayoutChange}
+          // disabled={componentDisabled}
         >
-          {({ errors, touched }) => {
-            return (
-              <Form style={formStyle}>
-                <Typography variant="h5" sx={{ marginBottom: "20px" }}>
-                  Create Admin
-                </Typography>
-                <Stack direction="row" gap="50px">
-                  <Stack
-                    direction="column"
-                    sx={{
-                      gap: "20px",
+          {/* <Form.Item label="Ảnh" valuePropName="fileList">
+                  <input
+                    type="file"
+                    className="input file"
+                    onChange={(e) => {
+                      handlePreviewImage(e);
+                      handleUploadImage(e.target.files[0], setImg);
                     }}
-                  >
-                    <Box>
-                      <label>Mã Sinh Viên</label>
-                      <Field
-                        style={{ padding: "5px 15px" }}
-                        type="text"
-                        id="msv"
-                        placeholder=""
-                        name="msv"
-                      />
-                      {errors.msv && touched.msv ? (
-                        <span className="errorMessage">{errors.msv}</span>
-                      ) : (
-                        ""
-                      )}
-                    </Box>
-                    <Box>
-                      <label>Họ Tên</label>
-                      <Field
-                        style={{ padding: "5px 15px" }}
-                        type="text"
-                        id="name"
-                        placeholder=""
-                        name="name"
-                      />
-                      {errors.name && touched.name ? (
-                        <span className="errorMessage">{errors.name}</span>
-                      ) : (
-                        ""
-                      )}
-                    </Box>
-                    <Box>
-                      <label>UserName</label>
-                      <Field
-                        style={{ padding: "5px 15px" }}
-                        type="text"
-                        id="username"
-                        placeholder=""
-                        name="username"
-                      />
-                      {errors.username && touched.username ? (
-                        <span className="errorMessage">{errors.username}</span>
-                      ) : (
-                        ""
-                      )}
-                    </Box>
-                  </Stack>
-                  <Stack
-                    direction="column"
-                    sx={{
-                      gap: "20px",
-                    }}
-                  >
-                    <Box>
-                      <label>Password</label>
-                      <Field
-                        style={{ padding: "5px 15px" }}
-                        type="text"
-                        id="password"
-                        placeholder=""
-                        name="password"
-                      />
-                      {errors.password && touched.password ? (
-                        <span className="errorMessage">{errors.password}</span>
-                      ) : (
-                        ""
-                      )}
-                    </Box>
-                    <Box>
-                      <label>Chức Vụ</label>
-                      <Field
-                        style={{ padding: "5px 15px" }}
-                        type="text"
-                        id="role"
-                        placeholder=""
-                        name="role"
-                      />
-                      {errors.role && touched.role ? (
-                        <span className="errorMessage">{errors.role}</span>
-                      ) : (
-                        ""
-                      )}
-                    </Box>
-                  </Stack>
-                </Stack>
-                <Stack>
-                  <Button
-                    variant="contained"
-                    color="info"
-                    sx={{ marginTop: "20px" }}
-                    type="submit"
-                  >
-                    Create Admin
-                  </Button>
-                </Stack>
-              </Form>
-            );
-          }}
-        </Formik>
+                  />
+                  {imagePreview && (
+                    <div className="article_image_preview">
+                      <img src={imagePreview.preview} alt="" width="300px" />
+                    </div>
+                  )}
+                </Form.Item> */}
+          <Form.Item label="Mã SV">
+            <div
+              style={{
+                display: "flex",
+                gap: "20px",
+                alignItems: "center",
+              }}
+            >
+              <Input
+                value={msv}
+                onChange={(e) => setMsv(e.target.value)}
+              />{" "}
+            </div>
+          </Form.Item>
+          <Form.Item label="Họ Tên">
+            <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </Form.Item>
+          <Form.Item label="Tài Khoản">
+            <Input
+              value={username}
+              onChange={(e) => setUserName(e.target.value)}
+            />
+          </Form.Item>
+          <Form.Item label="Mật Khẩu">
+            <Input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </Form.Item>
+          <Form.Item label="Giới Tính">
+            <Radio.Group
+              onChange={(e) => setGender(e.target.value)}
+              name="radiogroup"
+              value={gender}
+            >
+              <Radio value={0}> Nam </Radio>
+              <Radio value={1}> Nữ </Radio>
+            </Radio.Group>
+          </Form.Item>
+          <Form.Item label="Lớp">
+            <Input
+              maxLength={10}
+              width={100}
+              value={classs}
+              onChange={(e) => setClasss(e.target.value)}
+            />
+          </Form.Item>
+        </Form>
       </Modal>
       {data ? (
         <TableQTV />
@@ -255,14 +203,16 @@ const TableQTV = () => {
   const [loading, setLoading] = useState(false);
   let adminDetailOnline;
   useEffect(() => {
-    getData()
-  }, [])
+    getData();
+  }, []);
   const swapStatus = (value) => {
     handAdminDetail(value).then(() => {
-      axios.patch(`${config.API_URL}/api/admin/${value}`, {
-        online: !adminDetailOnline
-      }).then(() => getData())
-    })
+      axios
+        .patch(`${config.API_URL}/api/admin/${value}`, {
+          online: !adminDetailOnline,
+        })
+        .then(() => getData());
+    });
   };
   const handAdminDetail = async (value) => {
     await axios.get(`${config.API_URL}/api/admin/${value}`).then((res) => {

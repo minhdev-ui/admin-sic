@@ -19,6 +19,12 @@
         background-color: #f36430;
         box-shadow: none !important;
     }
+    .option--disabled {
+        color: #fff;
+        background-color: gray;
+        box-shadow: none !important;
+        cursor: not-allowed;
+    }
 }
 
 .Dashboard-main-content {
