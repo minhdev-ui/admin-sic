@@ -19,7 +19,7 @@ import Logo from "../components/layout/partials/Logo";
 import { Dropdown } from "antd";
 import axios from "axios";
 import config from "../db.config";
-import { Stack } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 
 const { Sider } = Layout;
 
@@ -47,9 +47,9 @@ const Setting = ({ obj, history }) => {
         {
           icon: (
             <Stack
-              direction='row'
+              direction="row"
               sx={{
-                width: '100%'
+                width: "100%",
               }}
               onClick={() => {
                 // eslint-disable-next-line no-restricted-globals
@@ -140,22 +140,25 @@ const LayoutAdmin = ({ children }) => {
             <Dropdown
               overlay={<Setting obj={detailAcc} history={history} />}
               trigger={["click"]}
-              overlayStyle={{fontSize: '16px'}}
+              overlayStyle={{ fontSize: "16px" }}
             >
-              <div className="user-avatar">
-                <Image
-                  src={
-                    detailAcc
-                      ? detailAcc.gender === 0
-                        ? avatarMale
-                        : avatarFemale
-                      : avatarGuest
-                  }
-                  width={35}
-                  height={35}
-                  alt="user"
-                />
-              </div>
+              <Stack direction='row' gap={2} alignItems='center'>
+                <div className="user-avatar">
+                  <Image
+                    src={
+                      detailAcc
+                        ? detailAcc.gender === 0
+                          ? avatarMale
+                          : avatarFemale
+                        : avatarGuest
+                    }
+                    width={35}
+                    height={35}
+                    alt="user"
+                  />
+                </div>
+                <Typography color={'#fff'} fontSize={16}>{detailAcc.name}</Typography>
+              </Stack>
             </Dropdown>
           </div>
         </div>

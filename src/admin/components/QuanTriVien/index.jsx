@@ -34,6 +34,7 @@ import {
   Radio,
   Upload,
 } from "antd";
+import { Error } from "mongoose";
 const QTV = () => {
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState([]);
@@ -62,23 +63,31 @@ const QTV = () => {
     return check === undefined ? false : true;
   };
   const handleSubmit = async (obj) => {
-    if(checkMsv(msv)){
-      createNotification('error', {message: 'Msv này hiện đã là admin'})
-    }else{
-      axios.post(`${config.API_URL}/api/admin/add`, {
-        ...obj,
-        online: false,
-        token: checkToken(),
-      });
+    if (checkMsv(msv)) {
+      createNotification("error", { message: "Msv này hiện đã là admin" });
+    } else {
+      axios
+        .post(`${config.API_URL}/api/admin/add`, {
+          ...obj,
+          online: false,
+          token: checkToken(),
+        })
+        .then((res) =>
+          res.status === 200
+            ? createNotification("success", { message: "Đã Thêm Thành Công" })
+            : createNotification("error", { message: "Lỗi" })
+        )
+        .catch((err) => console.log(Error));
     }
     handleCloseModal();
+    getData();
   };
-  const [msv, setMsv] = useState('');
+  const [msv, setMsv] = useState("");
   const [name, setName] = useState("");
   const [gender, setGender] = useState(0);
   const [classs, setClasss] = useState("");
-  const [username, setUserName] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUserName] = useState("");
+  const [password, setPassword] = useState("");
   return (
     <>
       <Button
@@ -98,14 +107,16 @@ const QTV = () => {
         destroyOnClose
         closable={false}
         maskClosable={false}
-        onOk={() => handleSubmit({
-          msv: msv,
-          name: name,
-          username: username,
-          password: password,
-          gender: gender,
-          role: 'Admin'
-        })}
+        onOk={() =>
+          handleSubmit({
+            msv: msv,
+            name: name,
+            username: username,
+            password: password,
+            gender: gender,
+            role: "Admin",
+          })
+        }
       >
         <Form
           labelCol={{ span: 4 }}
@@ -137,17 +148,11 @@ const QTV = () => {
                 alignItems: "center",
               }}
             >
-              <Input
-                value={msv}
-                onChange={(e) => setMsv(e.target.value)}
-              />{" "}
+              <Input value={msv} onChange={(e) => setMsv(e.target.value)} />{" "}
             </div>
           </Form.Item>
           <Form.Item label="Họ Tên">
-            <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+            <Input value={name} onChange={(e) => setName(e.target.value)} />
           </Form.Item>
           <Form.Item label="Tài Khoản">
             <Input

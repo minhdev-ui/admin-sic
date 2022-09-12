@@ -4,7 +4,7 @@ import { Markup } from "interweave"; // for converting string to html
 const DetailArticle = ({ post }) => {
   return (
     <div>
-      <h4 className="title">{post.title}</h4>
+      <h4 className="title" style={{color: '#000', fontSize: '40px'}}>{post.title}</h4>
       <img
         src={post.image}
         alt=""

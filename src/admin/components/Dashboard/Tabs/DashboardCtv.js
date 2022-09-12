@@ -256,9 +256,11 @@ const DashboardCtv = () => {
   }
   function handleDeleteCtv(id) {
     axios
-      .get(`${config.API_URL}/api/ctv/delete/${id}`)
-      .then(() => {
-        createNotification("success", {message: "Xoá thành công! :3"})
+      .get(`${config.API_URL}/api/ctv/${id}`)
+      .then((res) => {
+        if(res.status === 200) {
+          createNotification("success", {message: "Xoá thành công! :3"})
+        }
         getCtvData();
       })
       .catch((err) => {
@@ -280,7 +282,7 @@ const DashboardCtv = () => {
     setOpen(false);
   };
   async function clearCollection() {
-    data && data.forEach((item) => axios.delete(`${config.API_URL}/api/ctv/delete/${item._id}`));
+    data && data.forEach((item) => axios.delete(`${config.API_URL}/api/ctv/${item._id}`));
   }
   useEffect(() => {
     setLoading(true);

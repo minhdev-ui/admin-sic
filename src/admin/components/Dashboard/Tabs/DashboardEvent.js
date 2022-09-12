@@ -1,147 +1,146 @@
 import {
-    Button,
-    FormLabel,
-    IconButton,
-    Input,
-    Paper,
-    Stack,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Typography,
-  } from "@mui/material";
-  import axios from "axios";
-  import { Table, Tag } from "antd";
-  import { collection, getDocs, where, query } from "firebase/firestore";
-  import { useEffect, useState } from "react";
-  // import db from "../../../../db.config";
-  import config from "../../../../db.config";
-  import { Tags } from "../../../../utils/tags";
-  
-  const DashboardEvent = () => {
-    // For Detail Page
-    const [showDetailArticle, setShowDetailArticle] = useState(false); // show detail
-  
-    const [searchValue, setSearchValue] = useState("");
-  
-    const columns = [
-      {
-        title: "ID Blog",
-        align: 'center',
-        dataIndex: ["_id"],
-        ellipsis: true,
+  Button,
+  FormLabel,
+  IconButton,
+  Input,
+  Paper,
+  Stack,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
+import axios from "axios";
+import { Table, Tag } from "antd";
+import { collection, getDocs, where, query } from "firebase/firestore";
+import { useEffect, useState } from "react";
+// import db from "../../../../db.config";
+import config from "../../../../db.config";
+import { Tags } from "../../../../utils/tags";
+import { AiFillDelete } from "react-icons/ai";
+import { BiDetail } from "react-icons/bi";
+import { BsFillPenFill } from "react-icons/bs";
+import createNotification from "../../../../components/elements/Nofication";
+import DetailArticle from "../../Blog/DetailArticle";
+
+const DashboardEvent = () => {
+  // For Detail Page
+  const columns = [
+    {
+      title: "ID Blog",
+      align: "center",
+      dataIndex: ["_id"],
+      ellipsis: true,
+    },
+    {
+      title: "Tiêu Đề",
+      align: "center",
+      dataIndex: ["shortDes"],
+      ellipsis: true,
+    },
+    {
+      title: "Tác Giả",
+      align: "center",
+      dataIndex: ["author"],
+    },
+    {
+      title: "Phân Trang",
+      align: "center",
+      dataIndex: ["categorize"],
+      ellipsis: true,
+    },
+    {
+      title: "Tags",
+      align: "center",
+      dataIndex: ["tags"],
+      render(value) {
+        return (
+          <div>
+            {value.map((item, i) => (
+              <Tag key={i} color={"blue"}>
+                {item}
+              </Tag>
+            ))}
+          </div>
+        );
       },
-      {
-        title: "Tiêu Đề",
-        align: 'center',
-        dataIndex: ["shortDes"],
-        ellipsis: true
-      },
-      {
-        title: "Tác Giả",
-        align: 'center',
-        dataIndex: ["author"],
-      },
-      {
-        title: "Phân Trang",
-        align: 'center',
-        dataIndex: ["categorize"],
-        ellipsis: true,
-      },
-      {
-        title: "Tags",
-        align: 'center',
-        dataIndex: ["tags"],
-        render(value) {
-          return(
-            <div>
-              {value.map((item, i) => (
-                <Tag key={i} color={'blue'}>{item}</Tag>
-              ))}
-            </div>
-          )
-        },
-      },
-      {
-        title: "Action",
-        align: 'center',
-        dataIndex: ["_id"],
-        ellipsis: true,
-      },
-    ];
-  
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(false)
-    useEffect(() => {
-      handleGetData();
-    }, []);
-  
-    const handleGetData = () => {
-      setLoading(true)
-      axios
-        .get(`${config.API_URL}/api/article`, { params: { categorize: "Event" } })
-        .then((res) => {
-          setData(res.data)
-          setLoading(false)
-        });
-    };
-  
-    return (
-      <TableContainer component={Paper}>
-        {/* <Table sx={{ minWidth: 650, margin: 0 }} aria-label="simple table">
-            <TableHead
-              sx={{
-                backgroundColor: "#6B6DFF",
-                "th": {
-                  color: "#fff",
-                },
+    },
+    {
+      title: "Action",
+      align: "center",
+      dataIndex: ["_id"],
+      render(value) {
+        return (
+          <div className="article_admin_list_option">
+            <AiFillDelete
+              className="article_admin_option delete"
+              onClick={() => {
+                handleDeleteArticle(value);
               }}
-            >
-              <TableRow>
-                <TableCell align="center">ID Blog</TableCell>
-                <TableCell align="center">Tiêu đề</TableCell>
-                <TableCell align="center">Phân trang</TableCell>
-                <TableCell align="center">Tuỳ chọn</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.length > 0 && data ? (
-                data
-                  .filter((value) => {
-                    if (searchValue === "") {
-                      return value;
-                    } else if (
-                      value.title
-                        .toLowerCase()
-                        .includes(searchValue.toLowerCase())
-                    ) {
-                      return value;
-                    }
-                  })
-                  .map((row, index) => {
-                    return (
-                      <TableRow
-                        key={row.id}
-                        sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                      >
-                        <TableCell align="center">{index + 1}</TableCell>
-                        <TableCell align="center">{row.title}</TableCell>
-                        <TableCell align="center">{row.categorize}</TableCell>
-                      </TableRow>
-                    );
-                  })
-              ) : (
-                <TableCell colSpan={4} align="center">
-                  Hiện không có bài viết nào!
-                </TableCell>
-              )}
-            </TableBody>
-          </Table> */}
-        <Table dataSource={data} loading={loading} columns={columns}></Table>
-      </TableContainer>
-    );
+            ></AiFillDelete>
+            <BiDetail
+              className="article_admin_option"
+              onClick={() => {
+                setShowDetail(!showDetail)
+                handleGetDetailData(value);
+              }}
+            ></BiDetail>
+            <BsFillPenFill
+              className="article_admin_option"
+              // onClick={() =>
+            ></BsFillPenFill>
+          </div>
+        );
+      },
+    },
+  ];
+
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [detail, setDetail] = useState({});
+  const [showDetail, setShowDetail] = useState(false);
+  useEffect(() => {
+    handleGetData();
+  }, []);
+
+  const handleDeleteArticle = (_id) => {
+    axios
+      .get(`${config.API_URL}/api/article/delete/${_id}`)
+      .then((res) =>
+        res.status === 200
+          ? createNotification("success", { message: "Xóa Thành Công" })
+          : createNotification("error", { message: "Lỗi" })
+      )
+      .catch((err) => console.log(err));
+    handleGetData();
   };
-  
-  export default DashboardEvent;  
+
+  const handleGetData = () => {
+    setLoading(true);
+    axios
+      .get(`${config.API_URL}/api/article`, { params: { categorize: "Event" } })
+      .then((res) => {
+        setData(res.data);
+        setLoading(false);
+      });
+  };
+
+  const handleGetDetailData = (_id) => {
+    axios.get(`${config.API_URL}/api/article/${_id}`).then((res) => {
+      if (res.status === 200) {
+        setDetail(res.data);
+      }
+    });
+  };
+
+  return (
+    <TableContainer component={Paper}>
+      <Table dataSource={data} loading={loading} columns={columns}></Table>
+      {showDetail && <DetailArticle post={detail} />}
+    </TableContainer>
+  );
+};
+
+export default DashboardEvent;

@@ -51,9 +51,6 @@ const DashboardRoom = () => {
         });
       });
   };
-
-  console.log(msv);
-
   const handleCreate = (obj) => {
     setOpen(false)
     axios(`${Config.API_URL}/api/room/add`, {
@@ -77,11 +74,24 @@ const DashboardRoom = () => {
       });
   };
 
+  const handleEntered = (_id) => {
+    setOpen(false)
+    axios
+      .patch(`${Config.API_URL}/api/room/${_id}`, { entered: true })
+      .then(() => {
+        const responseData = getData();
+        responseData.then((res) => {
+          setData(res.data);
+          setLoading(false);
+        });
+      });
+  }
+
   return (
     <div className="Dashboard-room">
       <BarcodeReader onScan={handleScanner} />
       {open ? (
-        <FormModal visible={open} Msv={msv} handleCreate={handleCreate} onClose={() => setOpen(false)}/>
+        <FormModal visible={open} Msv={msv} handleCreate={handleCreate} handleEntered={handleEntered} onClose={() => setOpen(false)}/>
       ) : (
         <div></div>
       )}

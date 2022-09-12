@@ -18,7 +18,7 @@ import handleUploadImage from "../../../../utils/uploadImage";
 import moment from 'moment'
 
 const FormModal = (props) => {
-  const { visible, handleCreate, Msv = "", onClose } = props;
+  const { visible, handleCreate, Msv = "", onClose, handleEntered } = props;
   const [obj, setObj] = useState({});
   const [img, setImg] = useState(obj?.image || "");
   const [msv, setMsv] = useState(Msv);
@@ -32,6 +32,8 @@ const FormModal = (props) => {
   useEffect(() => {
     setMsv(obj?.msv || Msv);
   }, [Msv, obj?.msv]);
+
+  console.log(obj?.msv)
 
   useEffect(() => {
     const getDetailData = async () => {
@@ -62,15 +64,19 @@ const FormModal = (props) => {
       closable={false}
       maskClosable={false}
       onOk={() => {
-        handleCreate({
-          image: img,
-          msv: msv.replace(/\n/g, ""),
-          name: name,
-          gender: gender,
-          class: classs,
-          date: date,
-          entered: true,
-        });
+        if(obj?.msv === undefined) {
+          handleCreate({
+            image: img,
+            msv: msv.replace(/\n/g, ""),
+            name: name,
+            gender: gender,
+            class: classs,
+            date: date,
+            entered: true,
+          });
+        }else {
+          handleEntered(obj?._id)
+        }
       }}
     >
       <Form

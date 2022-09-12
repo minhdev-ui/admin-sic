@@ -15,8 +15,8 @@ export const AdminDashboard = create((set, get) => ({
     dashboard: [
         {name: 'Quản Lý Phòng Máy', status: true, id: 1, adminAllow: false, disabled: false},
         {name: 'Quản Lý CTV', status: false, id: 2, adminAllow: true, disabled: false},
-        {name: 'Quản Lý Sự Kiện', status: false, id: 3, adminAllow: true, disabled: false},
-        {name: 'Quản Lý Bài Viết', status: false, id: 4, adminAllow: true, disabled: false},
+        {name: 'Quản Lý Bài Viết', status: false, id: 3, adminAllow: true, disabled: false},
+        {name: 'Quản Lý Sự Kiện', status: false, id: 4, adminAllow: true, disabled: false},
     ],
     currentTab: 1
 }))
