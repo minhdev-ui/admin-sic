@@ -1,25 +1,23 @@
 import {
-  DesktopOutlined,
+  ContactsOutlined, DesktopOutlined,
   PieChartOutlined,
-  UserOutlined,
-  ContactsOutlined,
+  UserOutlined
 } from "@ant-design/icons";
-import { Layout, Menu } from "antd";
+import { Stack, Typography } from "@mui/material";
+import { Dropdown, Layout, Menu } from "antd";
+import axios from "axios";
 import classNames from "classnames";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FaBell } from "react-icons/fa";
 import { HiOutlineLogout } from "react-icons/hi";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import Store, { sideBar } from "../admin/store";
 import avatarMale from "../assets/images/admin/avatar.png";
-import avatarFemale from "../assets/images/admin/girlAva.png";
 import avatarGuest from "../assets/images/admin/avatarGuest.png";
+import avatarFemale from "../assets/images/admin/girlAva.png";
 import Image from "../components/elements/Image";
 import Logo from "../components/layout/partials/Logo";
-import { Dropdown } from "antd";
-import axios from "axios";
 import config from "../db.config";
-import { Stack, Typography } from "@mui/material";
 
 const { Sider } = Layout;
 
@@ -76,7 +74,7 @@ const LayoutAdmin = ({ children }) => {
   const [collapse, setCollapse] = useState(false);
   const [detailAcc, setDetailAcc] = useState({});
   const [tokenAdmin, setTokenAdmin] = useState(localStorage.getItem("token"));
-  console.log(tokenAdmin);
+  const location = useLocation()
   const items = [
     getItem("Dashboard", "/Dashboard", <PieChartOutlined />),
     getItem(
@@ -121,7 +119,7 @@ const LayoutAdmin = ({ children }) => {
         </div>
         <Menu
           theme="dark"
-          defaultSelectedKeys={["/"]}
+          defaultSelectedKeys={[location.pathname]}
           items={items}
           mode="inline"
           onSelect={(key) => {
@@ -157,7 +155,7 @@ const LayoutAdmin = ({ children }) => {
                     alt="user"
                   />
                 </div>
-                <Typography color={'#fff'} fontSize={16}>{detailAcc.name}</Typography>
+                <Typography color={'#fff'} fontSize={16}>{detailAcc?.name || "Guest"}</Typography>
               </Stack>
             </Dropdown>
           </div>

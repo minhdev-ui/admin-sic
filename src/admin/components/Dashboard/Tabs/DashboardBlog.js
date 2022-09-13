@@ -1,35 +1,26 @@
 import {
-  Button,
-  FormLabel,
-  IconButton,
-  Input,
-  Paper,
-  Stack,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
+  Paper, TableContainer
 } from "@mui/material";
-import axios from "axios";
 import { Table, Tag } from "antd";
-import { collection, getDocs, where, query } from "firebase/firestore";
+import axios from "axios";
 import { useEffect, useState } from "react";
 // import db from "../../../../db.config";
-import config from "../../../../db.config";
-import { Tags } from "../../../../utils/tags";
 import { AiFillDelete } from "react-icons/ai";
 import { BiDetail } from "react-icons/bi";
 import { BsFillPenFill } from "react-icons/bs";
 import createNotification from "../../../../components/elements/Nofication";
+import config from "../../../../db.config";
+import { Tags } from "../../../../utils/tags";
 import DetailArticle from "../../Blog/DetailArticle";
+import UpdateArticle from "../../Blog/UpdateArticle";
 
 const DashboardBlog = () => {
   // For Detail Page
-  const [showDetailArticle, setShowDetailArticle] = useState(false); // show detail
-
-  const [searchValue, setSearchValue] = useState("");
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
+  const [detail, setDetail] = useState({});
+  const [update, setUpdate] = useState(false);
 
   const handleDeleteArticle = (_id) => {
     axios
@@ -38,8 +29,9 @@ const DashboardBlog = () => {
         res.status === 200
           ? createNotification("success", { message: "Xóa Thành Công" })
           : createNotification("error", { message: "Lỗi" })
-      ).catch(err => console.log(err));
-      handleGetData()
+      )
+      .catch((err) => console.log(err));
+    handleGetData();
   };
 
   const columns = [
@@ -97,24 +89,22 @@ const DashboardBlog = () => {
             <BiDetail
               className="article_admin_option"
               onClick={() => {
-                setShowDetail(!showDetail)
+                setShowDetail(!showDetail);
                 handleGetDetailData(value);
               }}
             ></BiDetail>
             <BsFillPenFill
               className="article_admin_option"
-              // onClick={() =>
+              onClick={() => {
+                setUpdate(!update);
+                handleGetDetailData(value);
+              }}
             ></BsFillPenFill>
           </div>
         );
       },
     },
   ];
-
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [showDetail, setShowDetail] = useState(false);
-  const [detail, setDetail] = useState({});
 
   useEffect(() => {
     handleGetData();
@@ -141,7 +131,11 @@ const DashboardBlog = () => {
   return (
     <TableContainer component={Paper}>
       <Table dataSource={data} loading={loading} columns={columns}></Table>
-      {showDetail && <DetailArticle post={detail} />}
+      {showDetail ? (
+        <DetailArticle post={detail} />
+      ) : (
+        update && <UpdateArticle post={detail} />
+      )}
     </TableContainer>
   );
 };

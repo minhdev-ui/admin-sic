@@ -1,19 +1,18 @@
+import { Box } from "@mui/material";
 import { Table } from "antd";
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
-import { MdRemoveCircle } from "react-icons/md";
-import { BarcodeScanner } from "react-usb-barcode-scanner";
-import FormModal from "../components/formModal";
-import Config from "../../../../db.config";
-import { Box } from "@mui/material";
-import { async } from "@firebase/util";
-import createNotification from "../../../../components/elements/Nofication";
+import React, { useEffect, useState } from "react";
 import BarcodeReader from "react-barcode-reader";
+import { MdRemoveCircle } from "react-icons/md";
+import createNotification from "../../../../components/elements/Nofication";
+import Config from "../../../../db.config";
+import FormModal from "../components/formModal";
 
 const DashboardRoom = () => {
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
-  const [msv, setMsv] = useState('');
+  const [msv, setMsv] = useState("");
+  const now = new Date().getHours()
   const [loading, setLoading] = useState(false);
 
   const handleScanner = (msv) => {
@@ -29,16 +28,28 @@ const DashboardRoom = () => {
   };
 
   useEffect(() => {
-    if(open === false) {
+    if (open === false) {
       const responseData = getData();
       responseData.then((res) => {
-        setData(res.data);
+        setData(res.data.filter((item) => item.entered === true));
         setLoading(false);
       });
+    } else {
+      return;
+    }
+  }, [open]);
+
+  const handleRemoveAllRoom = () => {
+    data.map((item) => removeRoom(item._id));
+  };
+
+  useEffect(() => {
+    if(now === 17) {
+      handleRemoveAllRoom()
     }else {
       return
     }
-  }, [open]);
+  }, [now])
 
   const removeRoom = (_id) => {
     axios
@@ -52,7 +63,7 @@ const DashboardRoom = () => {
       });
   };
   const handleCreate = (obj) => {
-    setOpen(false)
+    setOpen(false);
     axios(`${Config.API_URL}/api/room/add`, {
       method: "POST",
       headers: {
@@ -75,7 +86,7 @@ const DashboardRoom = () => {
   };
 
   const handleEntered = (_id) => {
-    setOpen(false)
+    setOpen(false);
     axios
       .patch(`${Config.API_URL}/api/room/${_id}`, { entered: true })
       .then(() => {
@@ -85,13 +96,19 @@ const DashboardRoom = () => {
           setLoading(false);
         });
       });
-  }
+  };
 
   return (
     <div className="Dashboard-room">
       <BarcodeReader onScan={handleScanner} />
       {open ? (
-        <FormModal visible={open} Msv={msv} handleCreate={handleCreate} handleEntered={handleEntered} onClose={() => setOpen(false)}/>
+        <FormModal
+          visible={open}
+          Msv={msv}
+          handleCreate={handleCreate}
+          handleEntered={handleEntered}
+          onClose={() => setOpen(false)}
+        />
       ) : (
         <div></div>
       )}
@@ -101,7 +118,7 @@ const DashboardRoom = () => {
         </h3>
         <Table
           loading={loading}
-          dataSource={data.filter((item) => item.entered === true)}
+          dataSource={data}
           columns={[
             {
               title: "Ảnh",
