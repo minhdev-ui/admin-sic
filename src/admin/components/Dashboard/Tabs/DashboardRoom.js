@@ -7,13 +7,13 @@ import { MdRemoveCircle } from "react-icons/md";
 import createNotification from "../../../../components/elements/Nofication";
 import Config from "../../../../db.config";
 import FormModal from "../components/formModal";
-import avatarMale from '../../../../assets/images/admin/avatar.png'
-import avatarFemale from '../../../../assets/images/admin/girlAva.png'
+import avatarMale from "../../../../assets/images/admin/avatar.png";
+import avatarFemale from "../../../../assets/images/admin/girlAva.png";
 const DashboardRoom = () => {
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
   const [msv, setMsv] = useState("");
-  const now = new Date().getHours()
+  const now = new Date().getHours();
   const [loading, setLoading] = useState(false);
 
   const handleScanner = (msv) => {
@@ -45,24 +45,26 @@ const DashboardRoom = () => {
   };
 
   useEffect(() => {
-    if(now === 17) {
-      handleRemoveAllRoom()
-    }else {
-      return
+    if (now === 17) {
+      handleRemoveAllRoom();
+    } else {
+      return;
     }
-  }, [now])
+  }, [now]);
 
   const removeRoom = (_id) => {
     axios
       .patch(`${Config.API_URL}/api/room/${_id}`, { entered: false })
-      .then(() => {
-        const responseData = getData();
-        responseData.then((res) => {
-          if(res.status === 200) {
-            setData(res.data.filter((item) => item === true));
-            setLoading(false);
-          }
-        });
+      .then((res) => {
+        if (res.status === 200) {
+          const responseData = getData();
+          responseData.then((res) => {
+            if (res.status === 200) {
+              setData(res.data.filter((item) => item.entered === true));
+              setLoading(false);
+            }
+          });
+        }
       });
   };
   const handleCreate = (obj) => {
@@ -78,7 +80,7 @@ const DashboardRoom = () => {
         createNotification("success", { message: "Đã Thêm" });
         const responseData = getData();
         responseData.then((res) => {
-          if(res.status === 200) {
+          if (res.status === 200) {
             setData(res.data.filter((item) => item.entered === true));
             setLoading(false);
           }
@@ -97,7 +99,7 @@ const DashboardRoom = () => {
       .then(() => {
         const responseData = getData();
         responseData.then((res) => {
-          if(res.status === 200) {
+          if (res.status === 200) {
             setData(res.data.filter((item) => item === true));
             setLoading(false);
           }
@@ -132,7 +134,12 @@ const DashboardRoom = () => {
               dataIndex: ["gender"],
               render(value) {
                 return (
-                  <Box component="img" src={value === 0 ? avatarMale : avatarFemale} width={50} height={50} />
+                  <Box
+                    component="img"
+                    src={value === 0 ? avatarMale : avatarFemale}
+                    width={50}
+                    height={50}
+                  />
                 );
               },
             },
