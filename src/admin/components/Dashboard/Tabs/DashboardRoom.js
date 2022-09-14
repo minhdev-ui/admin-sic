@@ -58,7 +58,7 @@ const DashboardRoom = () => {
       .then(() => {
         const responseData = getData();
         responseData.then((res) => {
-          setData(res.data);
+          setData(res.data.filter((item) => item === true));
           setLoading(false);
         });
       });
