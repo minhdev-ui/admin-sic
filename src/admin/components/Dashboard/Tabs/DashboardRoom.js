@@ -58,8 +58,10 @@ const DashboardRoom = () => {
       .then(() => {
         const responseData = getData();
         responseData.then((res) => {
-          setData(res.data.filter((item) => item === true));
-          setLoading(false);
+          if(res.status === 200) {
+            setData(res.data.filter((item) => item === true));
+            setLoading(false);
+          }
         });
       });
   };
@@ -76,8 +78,10 @@ const DashboardRoom = () => {
         createNotification("success", { message: "Đã Thêm" });
         const responseData = getData();
         responseData.then((res) => {
-          setData(res.data.filter((item) => item.entered === true));
-          setLoading(false);
+          if(res.status === 200) {
+            setData(res.data.filter((item) => item.entered === true));
+            setLoading(false);
+          }
         });
       })
       .catch((err) => {
@@ -93,8 +97,10 @@ const DashboardRoom = () => {
       .then(() => {
         const responseData = getData();
         responseData.then((res) => {
-          setData(res.data.filter((item) => item === true));
-          setLoading(false);
+          if(res.status === 200) {
+            setData(res.data.filter((item) => item === true));
+            setLoading(false);
+          }
         });
       });
   };

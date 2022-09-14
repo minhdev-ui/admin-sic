@@ -33,8 +33,6 @@ const FormModal = (props) => {
     setMsv(obj?.msv || Msv);
   }, [Msv, obj?.msv]);
 
-  console.log(obj?.msv)
-
   useEffect(() => {
     const getDetailData = async () => {
       await axios
@@ -125,7 +123,7 @@ const FormModal = (props) => {
           <Input value={name || obj?.name} onChange={(e) => setName(e.target.value)} />
         </Form.Item>
         <Form.Item label="Giới Tính">
-          <Radio.Group onChange={(e) => setGender(e.target.value)} name='radiogroup' value={gender || obj?.gender}>
+          <Radio.Group onChange={(e) => setGender(e.target.value)} value={gender || obj?.gender}>
             <Radio value={0}>
               {" "}
               Nam{" "}
