@@ -125,7 +125,7 @@ const FormModal = (props) => {
           <Input value={name || obj?.name} onChange={(e) => setName(e.target.value)} />
         </Form.Item>
         <Form.Item label="Giới Tính">
-          <Radio.Group onChange={(e) => setGender(e.target.value)} name='radiogroup' value={0}>
+          <Radio.Group onChange={(e) => setGender(e.target.value)} name='radiogroup' value={obj?.gender || 0}>
             <Radio value={0}>
               {" "}
               Nam{" "}

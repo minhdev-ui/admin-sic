@@ -75,7 +75,7 @@ const DashboardRoom = () => {
         createNotification("success", { message: "Đã Thêm" });
         const responseData = getData();
         responseData.then((res) => {
-          setData(res.data);
+          setData(res.data.filter((item) => item.entered === true));
           setLoading(false);
         });
       })
