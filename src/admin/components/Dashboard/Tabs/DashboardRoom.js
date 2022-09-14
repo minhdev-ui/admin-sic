@@ -7,7 +7,8 @@ import { MdRemoveCircle } from "react-icons/md";
 import createNotification from "../../../../components/elements/Nofication";
 import Config from "../../../../db.config";
 import FormModal from "../components/formModal";
-
+import avatarMale from '../../../../assets/images/admin/avatar.png'
+import avatarFemale from '../../../../assets/images/admin/girlAva.png'
 const DashboardRoom = () => {
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
@@ -122,10 +123,10 @@ const DashboardRoom = () => {
           columns={[
             {
               title: "Ảnh",
-              dataIndex: ["image"],
+              dataIndex: ["gender"],
               render(value) {
                 return (
-                  <Box component="img" src={value} width={50} height={50} />
+                  <Box component="img" src={value === 0 ? avatarMale : avatarFemale} width={50} height={50} />
                 );
               },
             },
