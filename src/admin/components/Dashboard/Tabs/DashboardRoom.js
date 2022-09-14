@@ -54,7 +54,9 @@ const DashboardRoom = () => {
 
   const removeRoom = (_id) => {
     axios
-      .patch(`${Config.API_URL}/api/room/${_id}`, { entered: false })
+      .patch(`${Config.API_URL}/api/room/${_id}`, {
+        entered: false
+      })
       .then((res) => {
         if (res.status === 200) {
           const responseData = getData();
@@ -92,10 +94,13 @@ const DashboardRoom = () => {
       });
   };
 
-  const handleEntered = (_id) => {
+  const handleEntered = (_id, obj) => {
     setOpen(false);
     axios
-      .patch(`${Config.API_URL}/api/room/${_id}`, { entered: true })
+      .patch(`${Config.API_URL}/api/room/${_id}`, {
+        ...obj,
+        entered: true
+      })
       .then(() => {
         const responseData = getData();
         responseData.then((res) => {
