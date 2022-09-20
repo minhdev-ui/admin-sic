@@ -10,7 +10,7 @@ import FormModal from "../components/formModal";
 import avatarMale from "../../../../assets/images/admin/avatar.png";
 import avatarFemale from "../../../../assets/images/admin/girlAva.png";
 const DashboardRoom = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(localStorage.getItem('RoomStudent') || []);
   const [open, setOpen] = useState(false);
   const [msv, setMsv] = useState("");
   const now = new Date().getHours();
@@ -22,19 +22,20 @@ const DashboardRoom = () => {
     // getDetailData();
   };
 
-  const getData = async () => {
-    setLoading(true);
-    const response = await axios.get(`${Config.API_URL}/api/room`);
-    return response;
-  };
+  // const getData = async () => {
+  //   setLoading(true);
+  //   const response = await axios.get(`${Config.API_URL}/api/room`);
+  //   return response;
+  // };
 
   useEffect(() => {
     if (open === false) {
-      const responseData = getData();
-      responseData.then((res) => {
-        setData(res.data.filter((item) => item.entered === true));
-        setLoading(false);
-      });
+      // const responseData = getData();
+      // responseData.then((res) => {
+      //   setData(res.data.filter((item) => item.entered === true));
+      //   setLoading(false);
+      // });
+      setData(localStorage.getItem('RoomStudent'))
     } else {
       return;
     }
@@ -58,19 +59,20 @@ const DashboardRoom = () => {
         entered: false
       })
       .then((res) => {
-        if (res.status === 200) {
-          const responseData = getData();
-          responseData.then((res) => {
-            if (res.status === 200) {
-              setData(res.data.filter((item) => item.entered === true));
-              setLoading(false);
-            }
-          });
-        }
+        // if (res.status === 200) {
+        //   const responseData = getData();
+        //   responseData.then((res) => {
+        //     if (res.status === 200) {
+        //       setData(res.data.filter((item) => item.entered === true));
+        //       setLoading(false);
+        //     }
+        //   });
+        // }
       });
   };
   const handleCreate = (obj) => {
     setOpen(false);
+    localStorage.setItem('RoomStudent', {...data, obj})
     axios(`${Config.API_URL}/api/room/add`, {
       method: "POST",
       headers: {
@@ -80,13 +82,13 @@ const DashboardRoom = () => {
     })
       .then((res) => {
         createNotification("success", { message: "Đã Thêm" });
-        const responseData = getData();
-        responseData.then((res) => {
-          if (res.status === 200) {
-            setData(res.data.filter((item) => item.entered === true));
-            setLoading(false);
-          }
-        });
+        // const responseData = getData();
+        // responseData.then((res) => {
+        //   if (res.status === 200) {
+        //     setData(res.data.filter((item) => item.entered === true));
+        //     setLoading(false);
+        //   }
+        // });
       })
       .catch((err) => {
         console.log(err);
@@ -102,13 +104,13 @@ const DashboardRoom = () => {
         entered: true
       })
       .then(() => {
-        const responseData = getData();
-        responseData.then((res) => {
-          if (res.status === 200) {
-            setData(res.data.filter((item) => item === true));
-            setLoading(false);
-          }
-        });
+        // const responseData = getData();
+        // responseData.then((res) => {
+        //   if (res.status === 200) {
+        //     setData(res.data.filter((item) => item === true));
+        //     setLoading(false);
+        //   }
+        // });
       });
   };
 

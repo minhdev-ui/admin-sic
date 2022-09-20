@@ -1,7 +1,8 @@
 import {
-  ContactsOutlined, DesktopOutlined,
+  ContactsOutlined,
+  DesktopOutlined,
   PieChartOutlined,
-  UserOutlined
+  UserOutlined,
 } from "@ant-design/icons";
 import { Stack, Typography } from "@mui/material";
 import { Dropdown, Layout, Menu } from "antd";
@@ -31,6 +32,24 @@ function getItem(label, key, icon, disabled) {
 }
 
 const Setting = ({ obj, history }) => {
+  const getDetailData = async (token) => {
+    const response = await axios.get(
+      `${config.API_URL}/api/admin/?token=${token}`
+    );
+    return response;
+  };
+
+  const checkLogout = (token) => {
+    if (token) {
+      const response = getDetailData(token);
+      response.then((res) => {
+        console.log(res.data);
+        axios.patch(`${config.API_URL}/api/admin/${res?.data[0]._id}`, {
+          deviceLogin: res?.data[0].deviceLogin > 0 ? res?.data[0].deviceLogin - 1 : 0,
+        });
+      });
+    }
+  };
   return (
     <Menu
       items={[
@@ -53,6 +72,7 @@ const Setting = ({ obj, history }) => {
                 // eslint-disable-next-line no-restricted-globals
                 if (confirm("Bạn muốn đăng xuất?")) {
                   Store.setState({ status: false });
+                  checkLogout(localStorage.getItem("token"));
                   localStorage.removeItem("token");
                   history.push("/loginAdmin");
                 }
@@ -74,7 +94,7 @@ const LayoutAdmin = ({ children }) => {
   const [collapse, setCollapse] = useState(false);
   const [detailAcc, setDetailAcc] = useState({});
   const [tokenAdmin, setTokenAdmin] = useState(localStorage.getItem("token"));
-  const location = useLocation()
+  const location = useLocation();
   const items = [
     getItem("Dashboard", "/Dashboard", <PieChartOutlined />),
     getItem(
@@ -140,7 +160,7 @@ const LayoutAdmin = ({ children }) => {
               trigger={["click"]}
               overlayStyle={{ fontSize: "16px" }}
             >
-              <Stack direction='row' gap={2} alignItems='center'>
+              <Stack direction="row" gap={2} alignItems="center">
                 <div className="user-avatar">
                   <Image
                     src={
@@ -155,7 +175,9 @@ const LayoutAdmin = ({ children }) => {
                     alt="user"
                   />
                 </div>
-                <Typography color={'#fff'} fontSize={16}>{detailAcc?.name || "Guest"}</Typography>
+                <Typography color={"#fff"} fontSize={16}>
+                  {detailAcc?.name || "Guest"}
+                </Typography>
               </Stack>
             </Dropdown>
           </div>

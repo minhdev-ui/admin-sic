@@ -71,6 +71,7 @@ const QTV = () => {
           ...obj,
           online: false,
           token: checkToken(),
+          deviceLogin: 0,
         })
         .then((res) =>
           res.status === 200
@@ -263,9 +264,9 @@ const TableQTV = () => {
           },
           {
             title: "Trạng Thái",
-            dataIndex: ["online"],
+            dataIndex: ["deviceLogin"],
             render(value) {
-              return value ? (
+              return value > 0 ? (
                 <Tag color="green">Online</Tag>
               ) : (
                 <Tag color="red">Offline</Tag>

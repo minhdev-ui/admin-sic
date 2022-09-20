@@ -17,29 +17,64 @@ const SchemaLogin = Yup.object().shape({
 });
 const Login = () => {
   const [data, setData] = useState([]);
+  const [detailData, setDetailData] = useState({});
   const getData = () => {
     axios.get(`${config.API_URL}/api/admin`).then((res) => {
       setData(res.data);
     });
   };
+  const getDetailData = async (token) => {
+    const response = await axios.get(
+      `${config.API_URL}/api/admin/?token=${token}`
+    );
+    return response;
+  };
+  const checkLogin = (token) => {
+    if (token) {
+      const response = getDetailData(token);
+      response.then((res) => {
+        console.log(res.data)
+        axios.patch(`${config.API_URL}/api/admin/${res?.data[0]._id}`, {
+          deviceLogin: res?.data[0].deviceLogin + 1,
+        });
+      });
+    }
+  };
+  
   useEffect(() => {
     getData();
   }, []);
   let history = useHistory();
 
-  const [show, setShow] = useState(false)
-//   const [password, setPassword] = useState('');
+  const [show, setShow] = useState(false);
+  //   const [password, setPassword] = useState('');
 
   const passwordCom = ({ field }) => {
     return (
-        <Stack position='relative' direction='row' alignItems='center' justifyContent='space-between'>
-            <input type={show ? 'text' : 'password'} name='password' placeholder=" " {...field} />
-            <Box position='absolute' right={0} top={5} sx={{zIndex: 10, cursor: 'pointer', padding: '0 10px'}} onClick={() => setShow(!show)}>
-                {show ? <EyeInvisibleOutlined /> : <EyeOutlined />}
-            </Box>
-        </Stack>
-    )
-  }
+      <Stack
+        position="relative"
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <input
+          type={show ? "text" : "password"}
+          name="password"
+          placeholder=" "
+          {...field}
+        />
+        <Box
+          position="absolute"
+          right={0}
+          top={5}
+          sx={{ zIndex: 10, cursor: "pointer", padding: "0 10px" }}
+          onClick={() => setShow(!show)}
+        >
+          {show ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+        </Box>
+      </Stack>
+    );
+  };
 
   return (
     <div className="login-section">
@@ -60,19 +95,25 @@ const Login = () => {
                 (item) =>
                   item.msv === values.username &&
                   item.password === values.password
-              ) || (values.username === 'admin' && values.password === 'admin')
+              ) ||
+              (values.username === "admin" && values.password === "admin")
             ) {
-              const tokenLogin = data.find(
-                (item) =>
-                  item.msv === values.username &&
-                  item.password === values.password
-              ) || null;
-              console.log(tokenLogin)
+              const tokenLogin =
+                data.find(
+                  (item) =>
+                    item.msv === values.username &&
+                    item.password === values.password
+                ) || null;
+              console.log(tokenLogin);
               createNotification("success", {
                 message: "Đăng Nhập Thành Công",
                 duration: 2,
               });
-              tokenLogin?.token !== null && localStorage.setItem("token", tokenLogin?.token);
+
+              if (tokenLogin?.token !== null) {
+                localStorage.setItem("token", tokenLogin?.token);
+                checkLogin(tokenLogin?.token);
+              }
               history.push("/");
             } else {
               createNotification("error", {
@@ -99,7 +140,7 @@ const Login = () => {
                 <label htmlFor="password" className="title">
                   Password
                 </label>
-                <Field name="password" component={passwordCom}/>
+                <Field name="password" component={passwordCom} />
                 {errors.password && touched.password ? (
                   <div className="errorMessage">{errors.password}</div>
                 ) : (
