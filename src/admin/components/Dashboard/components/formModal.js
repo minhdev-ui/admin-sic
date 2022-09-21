@@ -73,13 +73,13 @@ const FormModal = (props) => {
             entered: true,
           });
         }else {
-          handleEntered(obj?._id, {
-            image: obj?.image || img,
+          handleEntered(obj._id, {
+            image: obj.image || img,
             msv: msv.replace(/\n/g, ""),
-            name: obj?.name || name,
-            gender: obj?.gender || gender,
-            class: classs,
-            date: date,
+            name: obj.name || name,
+            gender: obj.gender || gender,
+            class: obj.class || classs,
+            date: obj.date || date,
           })
         }
       }}
