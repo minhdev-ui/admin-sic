@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { Table } from "antd";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import BarcodeReader from "react-barcode-reader";
 import { MdRemoveCircle } from "react-icons/md";
 import createNotification from "../../../../components/elements/Nofication";
@@ -10,17 +10,27 @@ import FormModal from "../components/formModal";
 import avatarMale from "../../../../assets/images/admin/avatar.png";
 import avatarFemale from "../../../../assets/images/admin/girlAva.png";
 const DashboardRoom = () => {
-  const [data, setData] = useState(localStorage.getItem('RoomStudent') || []);
+  const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
   const [msv, setMsv] = useState("");
   const now = new Date().getHours();
   const [loading, setLoading] = useState(false);
 
+  
   const handleScanner = (msv) => {
     setOpen(true);
     setMsv(msv);
     // getDetailData();
   };
+  
+  useMemo(() => {
+      const dataFromStorage = JSON.parse(localStorage.getItem("RoomStudent"))
+      if(dataFromStorage){
+        setData(dataFromStorage)
+      }
+  }, []);
+
+  console.log(data)
 
   const getData = async () => {
     setLoading(true);
@@ -32,10 +42,13 @@ const DashboardRoom = () => {
     if (open === false) {
       const responseData = getData();
       responseData.then((res) => {
-        setData(res.data.filter((item) => item.entered === true));
+        localStorage.setItem(
+          "RoomStudent",
+          JSON.stringify(res.data.filter((item) => item.entered === true))
+        );
+        // setData(res.data.filter((item) => item.entered === true));
         setLoading(false);
       });
-      setData(localStorage.getItem('RoomStudent'))
     } else {
       return;
     }
@@ -56,14 +69,18 @@ const DashboardRoom = () => {
   const removeRoom = (_id) => {
     axios
       .patch(`${Config.API_URL}/api/room/${_id}`, {
-        entered: false
+        entered: false,
       })
       .then((res) => {
         if (res.status === 200) {
           const responseData = getData();
           responseData.then((res) => {
             if (res.status === 200) {
-              setData(res.data.filter((item) => item.entered === true));
+              localStorage.setItem(
+                "RoomStudent",
+                JSON.stringify(res.data.filter((item) => item.entered === true))
+              );
+              // setData(res.data.filter((item) => item.entered === true));
               setLoading(false);
             }
           });
@@ -72,7 +89,7 @@ const DashboardRoom = () => {
   };
   const handleCreate = (obj) => {
     setOpen(false);
-    localStorage.setItem('RoomStudent', {...data, obj})
+    localStorage.setItem("RoomStudent", { ...data, obj });
     axios(`${Config.API_URL}/api/room/add`, {
       method: "POST",
       headers: {
@@ -85,7 +102,11 @@ const DashboardRoom = () => {
         const responseData = getData();
         responseData.then((res) => {
           if (res.status === 200) {
-            setData(res.data.filter((item) => item.entered === true));
+            localStorage.setItem(
+              "RoomStudent",
+              JSON.stringify(res.data.filter((item) => item.entered === true))
+            );
+            // setData(res.data.filter((item) => item.entered === true));
             setLoading(false);
           }
         });
@@ -101,16 +122,26 @@ const DashboardRoom = () => {
     axios
       .patch(`${Config.API_URL}/api/room/${_id}`, {
         ...obj,
-        entered: true
+        entered: true,
       })
-      .then(() => {
-        const responseData = getData();
-        responseData.then((res) => {
-          if (res.status === 200) {
-            setData(res.data.filter((item) => item === true));
-            setLoading(false);
-          }
-        });
+      .then((res) => {
+        if (res.status === 200) {
+          const responseData = getData();
+          responseData.then((res) => {
+            if (res.status === 200) {
+              localStorage.setItem(
+                "RoomStudent",
+                JSON.stringify(res.data.filter((item) => item.entered === true))
+              );
+              // setData(res.data.filter((item) => item === true));
+              setLoading(false);
+            }
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        createNotification("error", { message: "Lỗi" });
       });
   };
 
