@@ -165,7 +165,7 @@ const ListArticle = ({ data, sortedFunc }) => {
             </div>
           </div>
 
-          <Link to="/admin/Blog-Event/add" className="article_add_button">
+          <Link to="/Blog-Event/add" className="article_add_button">
             +
           </Link>
           <TableContainer component={Paper}>

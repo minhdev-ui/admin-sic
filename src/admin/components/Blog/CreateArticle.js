@@ -74,7 +74,7 @@ function CreateArticle() {
     []
   );
   return (
-    <div>
+    <div style={{overflowY: 'scroll'}}>
       <Formik
         initialValues={{
           title: "",
