@@ -1,28 +1,15 @@
 import {
-  Button,
-  FormLabel,
-  IconButton,
-  Input,
-  Paper,
-  Stack,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
+  Paper, TableContainer
 } from "@mui/material";
-import axios from "axios";
 import { Table, Tag } from "antd";
-import { collection, getDocs, where, query } from "firebase/firestore";
+import axios from "axios";
 import { useEffect, useState } from "react";
 // import db from "../../../../db.config";
-import config from "../../../../db.config";
-import { Tags } from "../../../../utils/tags";
 import { AiFillDelete } from "react-icons/ai";
 import { BiDetail } from "react-icons/bi";
 import { BsFillPenFill } from "react-icons/bs";
 import createNotification from "../../../../components/elements/Nofication";
+import config from "../../../../db.config";
 import DetailArticle from "../../Blog/DetailArticle";
 
 const DashboardEvent = () => {
@@ -83,7 +70,7 @@ const DashboardEvent = () => {
             <BiDetail
               className="article_admin_option"
               onClick={() => {
-                setShowDetail(!showDetail)
+                setShowDetail(!showDetail);
                 handleGetDetailData(value);
               }}
             ></BiDetail>
@@ -137,7 +124,12 @@ const DashboardEvent = () => {
 
   return (
     <TableContainer component={Paper}>
-      <Table dataSource={data} loading={loading} columns={columns}></Table>
+      <Table
+        dataSource={data}
+        loading={loading}
+        columns={columns}
+        pagination={{ pageSize: 5 }}
+      ></Table>
       {showDetail && <DetailArticle post={detail} />}
     </TableContainer>
   );

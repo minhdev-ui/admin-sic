@@ -16,25 +16,16 @@ const DashboardRoom = () => {
   const now = new Date().getHours();
   const [loading, setLoading] = useState(false);
 
-  
   const handleScanner = (msv) => {
     setOpen(true);
     setMsv(msv);
     // getDetailData();
   };
-  
-  useMemo(() => {
-      const dataFromStorage = JSON.parse(localStorage.getItem("RoomStudent"))
-      if(dataFromStorage){
-        setData(dataFromStorage)
-      }
-  }, []);
-
-  console.log(data)
-
   const getData = async () => {
     setLoading(true);
-    const response = await axios.get(`${Config.API_URL}/api/room`);
+    const response = await axios.get(`${Config.API_URL}/api/room`, {
+      params: { entered: true },
+    });
     return response;
   };
 
@@ -42,11 +33,7 @@ const DashboardRoom = () => {
     if (open === false) {
       const responseData = getData();
       responseData.then((res) => {
-        localStorage.setItem(
-          "RoomStudent",
-          JSON.stringify(res.data.filter((item) => item.entered === true))
-        );
-        // setData(res.data.filter((item) => item.entered === true));
+        setData(res.data);
         setLoading(false);
       });
     } else {
@@ -76,11 +63,7 @@ const DashboardRoom = () => {
           const responseData = getData();
           responseData.then((res) => {
             if (res.status === 200) {
-              localStorage.setItem(
-                "RoomStudent",
-                JSON.stringify(res.data.filter((item) => item.entered === true))
-              );
-              // setData(res.data.filter((item) => item.entered === true));
+              setData(res.data);
               setLoading(false);
             }
           });
@@ -102,11 +85,7 @@ const DashboardRoom = () => {
         const responseData = getData();
         responseData.then((res) => {
           if (res.status === 200) {
-            localStorage.setItem(
-              "RoomStudent",
-              JSON.stringify(res.data.filter((item) => item.entered === true))
-            );
-            // setData(res.data.filter((item) => item.entered === true));
+            setData(res.data);
             setLoading(false);
           }
         });
@@ -129,10 +108,7 @@ const DashboardRoom = () => {
           const responseData = getData();
           responseData.then((res) => {
             if (res.status === 200) {
-              localStorage.setItem(
-                "RoomStudent",
-                JSON.stringify(res.data.filter((item) => item.entered === true))
-              );
+              localStorage.setItem("RoomStudent", JSON.stringify(res.data));
               // setData(res.data.filter((item) => item === true));
               setLoading(false);
             }
@@ -166,6 +142,7 @@ const DashboardRoom = () => {
         <Table
           loading={loading}
           dataSource={data}
+          pagination={{ pageSize: 5 }}
           columns={[
             {
               title: "Ảnh",

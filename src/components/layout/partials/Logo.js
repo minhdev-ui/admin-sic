@@ -6,6 +6,8 @@ import logo from './../../../assets/images/logo.png'
 
 const Logo = ({
   className,
+  width,
+  height,
   ...props
 }) => {
 
@@ -24,8 +26,8 @@ const Logo = ({
           <Image
             src={logo}
             alt="Open"
-            width={80}
-            height={100} />
+            width={width || 80}
+            height={height || 100} />
         </Link>
       </h1>
     </div>

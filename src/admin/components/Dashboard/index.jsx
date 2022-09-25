@@ -44,7 +44,6 @@ const Dashboard = () => {
   const tabDashboard = AdminDashboard((state) => state.dashboard);
   const currentTab = AdminDashboard((state) => state.currentTab);
   const [indexTab, setIndexTab] = useState(currentTab);
-  console.log(indexTab);
   return (
     <section>
       <div className="select-options">

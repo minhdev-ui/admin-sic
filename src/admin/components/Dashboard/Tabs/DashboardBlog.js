@@ -1,6 +1,4 @@
-import {
-  Paper, TableContainer
-} from "@mui/material";
+import { Paper, TableContainer } from "@mui/material";
 import { Table, Tag } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -130,7 +128,12 @@ const DashboardBlog = () => {
 
   return (
     <TableContainer component={Paper}>
-      <Table dataSource={data} loading={loading} columns={columns}></Table>
+      <Table
+        dataSource={data}
+        loading={loading}
+        columns={columns}
+        pagination={{ pageSize: 5 }}
+      ></Table>
       {showDetail ? (
         <DetailArticle post={detail} />
       ) : (

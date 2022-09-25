@@ -1,6 +1,8 @@
 import {
   ContactsOutlined,
   DesktopOutlined,
+  EditOutlined,
+  HomeOutlined,
   PieChartOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -96,17 +98,18 @@ const LayoutAdmin = ({ children }) => {
   const [tokenAdmin, setTokenAdmin] = useState(localStorage.getItem("token"));
   const location = useLocation();
   const items = [
+    getItem("Home", "/", <HomeOutlined />),
     getItem("Dashboard", "/Dashboard", <PieChartOutlined />),
     getItem(
       "Admin",
       "/Quan-tri-vien",
-      <DesktopOutlined />,
+      <UserOutlined />,
       tokenAdmin === "undefined" ? true : false
     ),
     getItem(
       "Bài Viết/Sự Kiện",
       "/Blog-Event",
-      <UserOutlined />,
+      <EditOutlined />,
       tokenAdmin === "undefined" ? true : false
     ),
     getItem(

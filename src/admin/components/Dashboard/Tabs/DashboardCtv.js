@@ -3,7 +3,9 @@ import {
   IconButton,
   Input,
   Paper,
-  Stack, TableContainer, Typography
+  Stack,
+  TableContainer,
+  Typography,
 } from "@mui/material";
 // import Modal from "@mui/material/Modal";
 import { EyeOutlined } from "@ant-design/icons";
@@ -25,8 +27,8 @@ const TOKEN_ADMIN = generateUUID();
 const TableCTV = ({ data, isLoading, handleDeleteCtv }) => {
   const [openModel, setOpenModel] = useState(false);
   const [ctvDetail, setCtvDetail] = useState({});
-  const [delModal, setDelModal] = useState(false)
-  
+  const [delModal, setDelModal] = useState(false);
+
   const handleOpen = (id) => {
     setCtvDetail(id);
     setOpenModel(true);
@@ -47,7 +49,7 @@ const TableCTV = ({ data, isLoading, handleDeleteCtv }) => {
           <Table
             loading={isLoading}
             dataSource={data}
-            pagination={false}
+            pagination={{ pageSize: 5 }}
             columns={[
               {
                 title: "Họ Tên",
@@ -126,7 +128,6 @@ const TableCTV = ({ data, isLoading, handleDeleteCtv }) => {
                           className="article_admin_option delete"
                           onClick={() => setDelModal(true)}
                         ></AiFillDelete>
-                        <BsFillPenFill className="article_admin_option"></BsFillPenFill>
                       </div>
                       {delModal ? (
                         <Modal
@@ -145,7 +146,7 @@ const TableCTV = ({ data, isLoading, handleDeleteCtv }) => {
                               key="Confirm"
                               type="primary"
                               onClick={() => {
-                                setDelModal(false)
+                                setDelModal(false);
                                 handleDeleteCtv(value);
                               }}
                             >
@@ -218,8 +219,6 @@ const SearchBar = ({ setSearchQuery, handleSubmit }) => (
   </form>
 );
 
-
-
 const DashboardCtv = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -249,15 +248,15 @@ const DashboardCtv = () => {
   }
   function handleDeleteCtv(id) {
     axios
-      .get(`${config.API_URL}/api/ctv/${id}`)
+      .delete(`${config.API_URL}/api/ctv/${id}`)
       .then((res) => {
-        if(res.status === 200) {
-          createNotification("success", {message: "Xoá thành công! :3"})
+        if (res.status === 200) {
+          createNotification("success", { message: "Xoá thành công! :3" });
         }
         getCtvData();
       })
       .catch((err) => {
-        createNotification("error", {message: "Lỗi Òy! T_T"});
+        createNotification("error", { message: "Lỗi Òy! T_T" });
         console.log(err);
       });
   }
@@ -275,7 +274,10 @@ const DashboardCtv = () => {
     setOpen(false);
   };
   async function clearCollection() {
-    data && data.forEach((item) => axios.delete(`${config.API_URL}/api/ctv/${item._id}`));
+    data &&
+      data.forEach((item) =>
+        axios.delete(`${config.API_URL}/api/ctv/${item._id}`)
+      );
   }
   useEffect(() => {
     setLoading(true);
@@ -392,7 +394,11 @@ const DashboardCtv = () => {
           </Typography>
         </Stack>
       </Stack>
-      <TableCTV data={data} isLoading={loading} handleDeleteCtv={handleDeleteCtv}/>
+      <TableCTV
+        data={data}
+        isLoading={loading}
+        handleDeleteCtv={handleDeleteCtv}
+      />
     </>
   );
 };
