@@ -14,7 +14,7 @@ const exportExcel = (data, workSheetColumnNames, workSheetName, filePath) => {
 
 const exportUsersToExcel = (users, workSheetColumnNames, workSheetName, filePath) => {
     const data = users.map(user => {
-        return [user.id, user.fullName, user.class, user.email, user.phone, user.answer.join(', '), user.message];
+        return [user.masv, user.fullName, user.class, user.email, user.phone, user.answer.join(', '), user.message];
     });
     exportExcel(data, workSheetColumnNames, workSheetName, filePath);
 }

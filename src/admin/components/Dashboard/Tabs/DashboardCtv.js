@@ -241,14 +241,16 @@ const DashboardCtv = () => {
   };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   async function getCtvData() {
-    await axios.get(`${config.API_URL}/api/ctv`).then((res) => {
-      setLoading(false);
-      setData(res.data);
-    });
+    await axios
+      .get(`${config.API_URL}/api/ctv`)
+      .then((res) => {
+        setLoading(false);
+        setData(res?.data?.filter(item => item.isDeleted === false));
+      });
   }
   function handleDeleteCtv(id) {
     axios
-      .delete(`${config.API_URL}/api/ctv/${id}`)
+      .patch(`${config.API_URL}/api/ctv/${id}`, { isDeleted: true })
       .then((res) => {
         if (res.status === 200) {
           createNotification("success", { message: "Xoá thành công! :3" });
