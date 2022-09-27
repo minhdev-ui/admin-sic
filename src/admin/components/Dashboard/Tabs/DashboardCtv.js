@@ -49,7 +49,7 @@ const TableCTV = ({ data, isLoading, handleDeleteCtv }) => {
           <Table
             loading={isLoading}
             dataSource={data}
-            pagination={{ pageSize: 5 }}
+            pagination={{ pageSize: 7 }}
             columns={[
               {
                 title: "Họ Tên",
@@ -241,12 +241,10 @@ const DashboardCtv = () => {
   };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   async function getCtvData() {
-    await axios
-      .get(`${config.API_URL}/api/ctv`)
-      .then((res) => {
-        setLoading(false);
-        setData(res?.data?.filter(item => item.isDeleted === false));
-      });
+    await axios.get(`${config.API_URL}/api/ctv`).then((res) => {
+      setLoading(false);
+      setData(res?.data?.filter((item) => item.isDeleted === false));
+    });
   }
   function handleDeleteCtv(id) {
     axios
@@ -278,7 +276,9 @@ const DashboardCtv = () => {
   async function clearCollection() {
     data &&
       data.forEach((item) =>
-        axios.delete(`${config.API_URL}/api/ctv/${item._id}`)
+        axios.patch(`${config.API_URL}/api/ctv/${item._id}`, {
+          isDeleted: true,
+        })
       );
   }
   useEffect(() => {
