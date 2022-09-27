@@ -44,12 +44,12 @@ const TableCTV = ({ data, isLoading, handleDeleteCtv }) => {
       {data ? (
         <TableContainer
           component={Paper}
-          sx={{ maxHeight: "65vh", position: "relative" }}
+          sx={{ maxHeight: "100vh", position: "relative" }}
         >
           <Table
             loading={isLoading}
             dataSource={data}
-            pagination={{ pageSize: 7 }}
+            pagination={{ pageSize: 10 }}
             columns={[
               {
                 title: "Họ Tên",
