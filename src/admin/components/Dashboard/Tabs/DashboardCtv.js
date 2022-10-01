@@ -188,6 +188,7 @@ const SearchBar = ({ setSearchQuery, handleSubmit }) => (
       display: "flex",
       flexDirection: "row",
     }}
+    onSubmit={(e) => e.preventDefault()}
   >
     <Stack direction="row" position="relative" alignItems="center">
       <FormLabel
@@ -203,19 +204,12 @@ const SearchBar = ({ setSearchQuery, handleSubmit }) => (
             marginBottom: "0 !important",
           },
         }}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        onChange={(e) => {
+          // setSearchQuery(e.target.value);
+          handleSubmit(e.target.value);
+        }}
       />
     </Stack>
-    <IconButton
-      type="submit"
-      aria-label="search"
-      onClick={(e) => {
-        e.preventDefault();
-        handleSubmit();
-      }}
-    >
-      <AiOutlineSearch />
-    </IconButton>
   </form>
 );
 
@@ -225,6 +219,7 @@ const DashboardCtv = () => {
   const [authorize, setAuthorize] = useState("");
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [fullData, setFullData] = useState([]);
   const workSheetColumnName = [
     "MSV",
     "Họ Tên",
@@ -235,7 +230,7 @@ const DashboardCtv = () => {
     "Số Điện Thoại",
     "Ban Lựa Chọn",
     "Lời Nhắn",
-    "Facebook Link"
+    "Facebook Link",
   ];
   const workSheetName = "Ctv";
   const filePath = "./outputFiles/ctv.xlsx";
@@ -244,9 +239,13 @@ const DashboardCtv = () => {
   };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   async function getCtvData() {
+    setLoading(true);
     await axios.get(`${config.API_URL}/api/ctv`).then((res) => {
-      setLoading(false);
-      setData(res?.data?.filter((item) => item.isDeleted === false));
+      if (res.status === 200) {
+        setLoading(false);
+        setData(res?.data?.filter((item) => item.isDeleted === false));
+        setFullData(res?.data?.filter((item) => item.isDeleted === false));
+      }
     });
   }
   function handleDeleteCtv(id) {
@@ -269,7 +268,7 @@ const DashboardCtv = () => {
       getCtvData();
     } else {
       filterData =
-        data && data.filter((item) => item.fullName.includes(query) === true);
+        fullData && fullData.filter((item) => item.fullName.toLowerCase().includes(query.toLowerCase()) === true);
       setData(filterData);
     }
   }
@@ -285,7 +284,6 @@ const DashboardCtv = () => {
       );
   }
   useEffect(() => {
-    setLoading(true);
     getCtvData();
   }, []);
   const modelStyle = {
@@ -390,14 +388,14 @@ const DashboardCtv = () => {
           </Stack>
           <SearchBar
             setSearchQuery={setSearchQuery}
-            handleSubmit={() => filterCtvData(searchQuery)}
+            handleSubmit={filterCtvData}
           />
         </Stack>
-        <Stack>
-          <Typography color="#000">
+        {/* <Stack>
+            <Typography color="#000">
             Tổng Số CTV Đăng Ký: {data.length} Đơn
           </Typography>
-        </Stack>
+        </Stack> */}
       </Stack>
       <TableCTV
         data={data}
