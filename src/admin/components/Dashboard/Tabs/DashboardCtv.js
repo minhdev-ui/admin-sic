@@ -228,11 +228,14 @@ const DashboardCtv = () => {
   const workSheetColumnName = [
     "MSV",
     "Họ Tên",
+    "Ngày Sinh",
+    "Giới Tính",
     "Lớp",
     "Email",
     "Số Điện Thoại",
     "Ban Lựa Chọn",
     "Lời Nhắn",
+    "Facebook Link"
   ];
   const workSheetName = "Ctv";
   const filePath = "./outputFiles/ctv.xlsx";
