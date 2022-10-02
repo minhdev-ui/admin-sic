@@ -391,11 +391,11 @@ const DashboardCtv = () => {
             handleSubmit={filterCtvData}
           />
         </Stack>
-        {/* <Stack>
+        <Stack>
             <Typography color="#000">
             Tổng Số CTV Đăng Ký: {data.length} Đơn
           </Typography>
-        </Stack> */}
+        </Stack>
       </Stack>
       <TableCTV
         data={data}
