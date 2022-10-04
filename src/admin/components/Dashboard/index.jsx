@@ -1,12 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
-import { useHistory } from "react-router-dom";
 import {
   disableBarcodeScanner,
   enableBarcodeScanner,
-  setHistoryInfo,
+  setHistoryInfo
 } from "react-usb-barcode-scanner";
-import config from "../../../components/Scanner/config";
 import { AdminDashboard } from "../../store";
 import "./assets/style.scss";
 //  import icons

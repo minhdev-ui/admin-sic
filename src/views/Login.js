@@ -1,15 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
-import * as Yup from "yup";
-import { Formik, Form, Field } from "formik";
-import Logo from "../components/layout/partials/Logo";
-import Store from "../admin/store";
-import createNotification from "../components/elements/Nofication";
-import axios from "axios";
-import config from "../db.config";
 import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 import { Stack } from "@mui/material";
 import { Box } from "@mui/system";
+import axios from "axios";
+import { Field, Form, Formik } from "formik";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import * as Yup from "yup";
+import createNotification from "../components/elements/Nofication";
+import Logo from "../components/layout/partials/Logo";
+import config from "../db.config";
 // import createNotification from "../components/elements/Nofication";
 const SchemaLogin = Yup.object().shape({
   username: Yup.string().required("Vui lòng điền trường này"),
@@ -33,17 +32,14 @@ const Login = () => {
     if (token) {
       const response = getDetailData(token);
       response.then((res) => {
-        console.log(res.data)
+        console.log(res.data);
         axios.patch(`${config.API_URL}/api/admin/${res?.data[0]._id}`, {
           deviceLogin: res?.data[0].deviceLogin + 1,
         });
       });
     }
   };
-  
-  useEffect(() => {
-    getData();
-  }, []);
+
   let history = useHistory();
 
   const [show, setShow] = useState(false);
@@ -90,37 +86,40 @@ const Login = () => {
           }}
           validationSchema={SchemaLogin}
           onSubmit={(values) => {
-            if (
-              data.find(
-                (item) =>
-                  item.msv === values.username &&
-                  item.password === values.password
-              ) ||
-              (values.username === "admin" && values.password === "admin")
-            ) {
-              const tokenLogin =
-                data.find(
+            axios.get(`${config.API_URL}/api/admin`).then((res) => {
+              if (
+                res.data.find(
                   (item) =>
                     item.msv === values.username &&
                     item.password === values.password
-                ) || null;
-              console.log(tokenLogin);
-              createNotification("success", {
-                message: "Đăng Nhập Thành Công",
-                duration: 2,
-              });
+                ) ||
+                (values.username === "admin" && values.password === "admin")
+              ) {
+                const tokenLogin =
+                  res.data.find(
+                    (item) =>
+                      item.msv === values.username &&
+                      item.password === values.password
+                  ) || null;
+                console.log(tokenLogin);
+                createNotification("success", {
+                  message: "Đăng Nhập Thành Công",
+                  duration: 2,
+                });
 
-              if (tokenLogin?.token !== null) {
-                localStorage.setItem("token", tokenLogin?.token);
-                checkLogin(tokenLogin?.token);
+                if (tokenLogin?.token !== null) {
+                  localStorage.setItem("token", tokenLogin?.token);
+                  localStorage.setItem("account", JSON.stringify(tokenLogin))
+                  checkLogin(tokenLogin?.token);
+                }
+                history.push("/");
+              } else {
+                createNotification("error", {
+                  message: "Lỗi Đăng Nhập",
+                  duration: 2,
+                });
               }
-              history.push("/");
-            } else {
-              createNotification("error", {
-                message: "Lỗi Đăng Nhập",
-                duration: 2,
-              });
-            }
+            });
           }}
         >
           {({ errors, touched }) => (

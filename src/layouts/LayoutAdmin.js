@@ -1,16 +1,14 @@
 import {
-  ContactsOutlined,
-  DesktopOutlined,
-  EditOutlined,
+  ContactsOutlined, EditOutlined,
   HomeOutlined,
   PieChartOutlined,
-  UserOutlined,
+  UserOutlined
 } from "@ant-design/icons";
 import { Stack, Typography } from "@mui/material";
 import { Dropdown, Layout, Menu } from "antd";
 import axios from "axios";
 import classNames from "classnames";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FaBell } from "react-icons/fa";
 import { HiOutlineLogout } from "react-icons/hi";
 import { useHistory, useLocation } from "react-router-dom";
@@ -45,7 +43,6 @@ const Setting = ({ obj, history }) => {
     if (token) {
       const response = getDetailData(token);
       response.then((res) => {
-        console.log(res.data);
         axios.patch(`${config.API_URL}/api/admin/${res?.data[0]._id}`, {
           deviceLogin: res?.data[0].deviceLogin > 0 ? res?.data[0].deviceLogin - 1 : 0,
         });
@@ -76,6 +73,7 @@ const Setting = ({ obj, history }) => {
                   Store.setState({ status: false });
                   checkLogout(localStorage.getItem("token"));
                   localStorage.removeItem("token");
+                  localStorage.removeItem("account");
                   history.push("/loginAdmin");
                 }
               }}
@@ -94,8 +92,8 @@ const LayoutAdmin = ({ children }) => {
   const classes = classNames("site-admin");
   const history = useHistory();
   const [collapse, setCollapse] = useState(false);
-  const [detailAcc, setDetailAcc] = useState({});
-  const [tokenAdmin, setTokenAdmin] = useState(localStorage.getItem("token"));
+  const [detailAcc] = useState(JSON.parse(localStorage.getItem('account')) || {});
+  const [tokenAdmin] = useState(localStorage.getItem("token"));
   const location = useLocation();
   const items = [
     getItem("Home", "/", <HomeOutlined />),
@@ -119,16 +117,6 @@ const LayoutAdmin = ({ children }) => {
       tokenAdmin === "undefined" ? true : false
     ),
   ];
-  useEffect(() => {
-    if (tokenAdmin) {
-      axios
-        .get(`${config.API_URL}/api/admin?token=${tokenAdmin}`)
-        .then((res) => setDetailAcc(...res.data));
-    } else {
-      return;
-    }
-    setTokenAdmin(localStorage.getItem("token"));
-  }, [tokenAdmin]);
 
   return (
     <section className={classes}>

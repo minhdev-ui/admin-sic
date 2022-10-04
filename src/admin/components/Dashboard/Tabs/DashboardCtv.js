@@ -1,11 +1,9 @@
 import {
-  FormLabel,
-  IconButton,
-  Input,
+  FormLabel, Input,
   Paper,
   Stack,
   TableContainer,
-  Typography,
+  Typography
 } from "@mui/material";
 // import Modal from "@mui/material/Modal";
 import { EyeOutlined } from "@ant-design/icons";
@@ -13,8 +11,7 @@ import { Box } from "@mui/system";
 import { Button, Modal, Table } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { AiFillDelete, AiOutlineSearch } from "react-icons/ai";
-import { BsFillPenFill } from "react-icons/bs";
+import { AiFillDelete } from "react-icons/ai";
 import { SiMicrosoftexcel } from "react-icons/si";
 import createNotification from "../../../../components/elements/Nofication";
 import config from "../../../../db.config";
@@ -253,9 +250,9 @@ const DashboardCtv = () => {
       .patch(`${config.API_URL}/api/ctv/${id}`, { isDeleted: true })
       .then((res) => {
         if (res.status === 200) {
-          createNotification("success", { message: "Xoá thành công! :3" });
+          createNotification("success", { message: `Xoá thành công sinh viên ${res.data.fullName}! :3` });
+          getCtvData();
         }
-        getCtvData();
       })
       .catch((err) => {
         createNotification("error", { message: "Lỗi Òy! T_T" });
@@ -280,6 +277,14 @@ const DashboardCtv = () => {
       data.forEach((item) =>
         axios.patch(`${config.API_URL}/api/ctv/${item._id}`, {
           isDeleted: true,
+        })
+      );
+  }
+  async function backupCollection() {
+    data &&
+      data.forEach((item) =>
+        axios.patch(`${config.API_URL}/api/ctv/${item._id}`, {
+          isDeleted: false,
         })
       );
   }
@@ -374,6 +379,12 @@ const DashboardCtv = () => {
               </Modal>
             )}
             <Button
+              onClick={backupCollection}
+              type="ghost"
+            >
+              Backup
+            </Button>
+            <Button
               onClick={handleExportCtv}
               disabled={data.length === 0 ? true : false}
               style={{
@@ -391,11 +402,11 @@ const DashboardCtv = () => {
             handleSubmit={filterCtvData}
           />
         </Stack>
-        {/* <Stack>
+        <Stack>
             <Typography color="#000">
             Tổng Số CTV Đăng Ký: {data.length} Đơn
           </Typography>
-        </Stack> */}
+        </Stack>
       </Stack>
       <TableCTV
         data={data}
