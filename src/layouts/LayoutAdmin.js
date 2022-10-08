@@ -49,6 +49,10 @@ const Setting = ({ obj, history }) => {
       });
     }
   };
+
+  const handleSetting = () => {
+    history.push('/account/profile')
+  }
   return (
     <Menu
       items={[
@@ -61,13 +65,16 @@ const Setting = ({ obj, history }) => {
           key: "name",
         },
         {
+          label: obj ? (<div onClick={handleSetting}>Setting</div>) : (<div></div>),
+        },
+        {
           icon: (
             <Stack
               direction="row"
               sx={{
                 width: "100%",
               }}
-              onClick={() => {
+              onCl  ick={() => {
                 // eslint-disable-next-line no-restricted-globals
                 if (confirm("Bạn muốn đăng xuất?")) {
                   Store.setState({ status: false });
