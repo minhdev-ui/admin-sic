@@ -1,8 +1,9 @@
 import {
-  ContactsOutlined, EditOutlined,
+  ContactsOutlined,
+  EditOutlined,
   HomeOutlined,
   PieChartOutlined,
-  UserOutlined
+  UserOutlined,
 } from "@ant-design/icons";
 import { Stack, Typography } from "@mui/material";
 import { Dropdown, Layout, Menu } from "antd";
@@ -44,15 +45,16 @@ const Setting = ({ obj, history }) => {
       const response = getDetailData(token);
       response.then((res) => {
         axios.patch(`${config.API_URL}/api/admin/${res?.data[0]._id}`, {
-          deviceLogin: res?.data[0].deviceLogin > 0 ? res?.data[0].deviceLogin - 1 : 0,
+          deviceLogin:
+            res?.data[0].deviceLogin > 0 ? res?.data[0].deviceLogin - 1 : 0,
         });
       });
     }
   };
 
   const handleSetting = () => {
-    history.push('/account/profile')
-  }
+    history.push("/account/profile");
+  };
   return (
     <Menu
       items={[
@@ -65,7 +67,7 @@ const Setting = ({ obj, history }) => {
           key: "name",
         },
         {
-          label: obj ? (<div onClick={handleSetting}>Setting</div>) : (<div></div>),
+          label: obj ? <div onClick={handleSetting}>Setting</div> : <div></div>,
         },
         {
           icon: (
@@ -74,7 +76,7 @@ const Setting = ({ obj, history }) => {
               sx={{
                 width: "100%",
               }}
-              onCl  ick={() => {
+              onClick={() => {
                 // eslint-disable-next-line no-restricted-globals
                 if (confirm("Bạn muốn đăng xuất?")) {
                   Store.setState({ status: false });
@@ -99,7 +101,9 @@ const LayoutAdmin = ({ children }) => {
   const classes = classNames("site-admin");
   const history = useHistory();
   const [collapse, setCollapse] = useState(false);
-  const [detailAcc] = useState(JSON.parse(localStorage.getItem('account')) || {});
+  const [detailAcc] = useState(
+    JSON.parse(localStorage.getItem("account")) || {}
+  );
   const [tokenAdmin] = useState(localStorage.getItem("token"));
   const location = useLocation();
   const items = [
