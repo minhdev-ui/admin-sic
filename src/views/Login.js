@@ -49,14 +49,17 @@ const Login = () => {
         if (
           res.data.find(
             (item) =>
-              item.msv === values.username && item.password === values.password
+              (item.msv === values.username ||
+                item.username === values.username) &&
+              item.password === values.password
           ) ||
           (values.username === "admin" && values.password === "admin")
         ) {
           const tokenLogin =
             res.data.find(
               (item) =>
-                item.msv === values.username &&
+                (item.msv === values.username ||
+                  item.username === values.username) &&
                 item.password === values.password
             ) || null;
           createNotification("success", {

@@ -255,10 +255,6 @@ const TableQTV = () => {
             dataIndex: ["username"],
           },
           {
-            title: "Password",
-            dataIndex: ["password"],
-          },
-          {
             title: "Chức Vụ",
             dataIndex: ["role"],
           },
