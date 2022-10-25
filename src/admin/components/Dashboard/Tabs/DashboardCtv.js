@@ -1,9 +1,10 @@
 import {
-  FormLabel, Input,
+  FormLabel,
+  Input,
   Paper,
   Stack,
   TableContainer,
-  Typography
+  Typography,
 } from "@mui/material";
 // import Modal from "@mui/material/Modal";
 import { EyeOutlined } from "@ant-design/icons";
@@ -250,7 +251,9 @@ const DashboardCtv = () => {
       .patch(`${config.API_URL}/api/ctv/${id}`, { isDeleted: true })
       .then((res) => {
         if (res.status === 200) {
-          createNotification("success", { message: `Xoá thành công sinh viên ${res.data.fullName}! :3` });
+          createNotification("success", {
+            message: `Xoá thành công sinh viên ${res.data.fullName}! :3`,
+          });
           getCtvData();
         }
       })
@@ -265,7 +268,11 @@ const DashboardCtv = () => {
       getCtvData();
     } else {
       filterData =
-        fullData && fullData.filter((item) => item.fullName.toLowerCase().includes(query.toLowerCase()) === true);
+        fullData &&
+        fullData.filter(
+          (item) =>
+            item.fullName.toLowerCase().includes(query.toLowerCase()) === true
+        );
       setData(filterData);
     }
   }
@@ -274,19 +281,16 @@ const DashboardCtv = () => {
   };
   async function clearCollection() {
     data &&
-      data.forEach((item) =>
-        axios.patch(`${config.API_URL}/api/ctv/${item._id}`, {
-          isDeleted: true,
-        })
-      );
+      axios.get(`${config.API_URL}/api/ctv/delete/all`).then((res) => {
+        if (res.status === 200) {
+          createNotification("success", { message: "Đã xóa thành công" });
+        } else {
+          createNotification("error", { message: "Xóa thất bại" });
+        }
+      });
   }
   async function backupCollection() {
-    data &&
-      data.forEach((item) =>
-        axios.patch(`${config.API_URL}/api/ctv/${item._id}`, {
-          isDeleted: false,
-        })
-      );
+    data && axios.get(`${config.API_URL}/api/ctv/backup/all`);
   }
   useEffect(() => {
     getCtvData();
@@ -378,10 +382,7 @@ const DashboardCtv = () => {
                 </Box>
               </Modal>
             )}
-            <Button
-              onClick={backupCollection}
-              type="ghost"
-            >
+            <Button onClick={backupCollection} type="ghost">
               Backup
             </Button>
             <Button
@@ -403,7 +404,7 @@ const DashboardCtv = () => {
           />
         </Stack>
         <Stack>
-            <Typography color="#000">
+          <Typography color="#000">
             Tổng Số CTV Đăng Ký: {data.length} Đơn
           </Typography>
         </Stack>

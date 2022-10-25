@@ -1,26 +1,18 @@
 /* eslint-disable default-case */
-import { Formik, Field, Form } from "formik";
-import * as Yup from "yup";
+import { Button } from "@mui/material";
+import { Field, Form, Formik } from "formik";
 import React, { useEffect, useMemo, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { Button } from "@mui/material";
+import * as Yup from "yup";
 import createNotification from "../../../components/elements/Nofication";
 // import dbConfig from "../../../db.config";
-import db from '../../../firebase.config'
-import dbConfig from '../../../db.config'
 import axios from "axios";
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
+import dbConfig from "../../../db.config";
 import handleUploadImage from "../../../utils/uploadImage";
 function CreateArticle() {
   const [imagePreview, setImagePreview] = useState("");
   const [url, setUrl] = useState("");
-
 
   const handleSubmit = async (obj) => {
     if (!obj) return null;

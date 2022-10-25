@@ -167,7 +167,9 @@ const LayoutAdmin = ({ children }) => {
                   <Image
                     src={
                       detailAcc
-                        ? detailAcc.gender === 0
+                        ? detailAcc.image
+                          ? detailAcc.image
+                          : detailAcc.gender === 0
                           ? avatarMale
                           : avatarFemale
                         : avatarGuest
@@ -175,6 +177,10 @@ const LayoutAdmin = ({ children }) => {
                     width={35}
                     height={35}
                     alt="user"
+                    style={{
+                      maxWidth: 35,
+                      maxHeight: 35,
+                    }}
                   />
                 </div>
                 <Typography color={"#fff"} fontSize={16}>
