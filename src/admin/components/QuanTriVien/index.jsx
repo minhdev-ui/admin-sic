@@ -1,40 +1,19 @@
-import {
-  Button,
-  Paper,
-  Stack,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
+import { Button, Paper, Stack, TableContainer, Modal } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
-import { Formik } from "formik";
 import { useEffect, useState } from "react";
-import { AiFillDelete, AiFillPlusCircle } from "react-icons/ai";
-import { BsFillPenFill } from "react-icons/bs";
+import { AiFillPlusCircle } from "react-icons/ai";
 // import CommingSoon from "../../../components/CommingSoon"
 // import db from "../../../db.config";
-import * as Yup from "yup";
-import Loading from "../../../utils/Loading";
-import config from "../../../db.config";
-import createNotification from "../../../components/elements/Nofication";
-import generateUUID from "../../store/uuid";
-import { Table, Tag } from "antd";
-import { SwapOutlined } from "@ant-design/icons";
-import {
-  Checkbox,
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
-  Modal,
-  Radio,
-  Upload,
-} from "antd";
+import { EyeFilled, SwapOutlined } from "@ant-design/icons";
+import { Form, Input, Radio, Modal as ModalCreate, Table, Tag } from "antd";
 import { Error } from "mongoose";
+import Image from "../../../components/elements/Image";
+import createNotification from "../../../components/elements/Nofication";
+import config from "../../../db.config";
+import Loading from "../../../utils/Loading";
+import generateUUID from "../../store/uuid";
+import { useHistory } from "react-router-dom";
 const QTV = () => {
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState([]);
@@ -100,7 +79,7 @@ const QTV = () => {
       >
         New <AiFillPlusCircle />
       </Button>
-      <Modal
+      <ModalCreate
         visible={openModal}
         title={`Thông Tin Của Admin`}
         okText="Create"
@@ -186,7 +165,7 @@ const QTV = () => {
             />
           </Form.Item>
         </Form>
-      </Modal>
+      </ModalCreate>
       {data ? (
         <TableQTV />
       ) : (
@@ -206,7 +185,9 @@ const QTV = () => {
 
 const TableQTV = () => {
   const [data, setData] = useState([]);
+  const [preview, setPreview] = useState(undefined);
   const [loading, setLoading] = useState(false);
+  const history = useHistory();
   let adminDetailOnline;
   useEffect(() => {
     getData();
@@ -233,56 +214,145 @@ const TableQTV = () => {
     });
   };
   return (
-    <TableContainer
-      component={Paper}
-      sx={{ maxHeight: "65vh", position: "relative" }}
-    >
-      <Table
-        loading={loading}
-        dataSource={data}
-        pagination={false}
-        columns={[
-          {
-            title: "MSV",
-            dataIndex: ["msv"],
-          },
-          {
-            title: "Họ Tên",
-            dataIndex: ["name"],
-          },
-          {
-            title: "UserName",
-            dataIndex: ["username"],
-          },
-          {
-            title: "Chức Vụ",
-            dataIndex: ["role"],
-          },
-          {
-            title: "Trạng Thái",
-            dataIndex: ["deviceLogin"],
-            render(value) {
-              return value > 0 ? (
-                <Tag color="green">Online</Tag>
-              ) : (
-                <Tag color="red">Offline</Tag>
-              );
+    <>
+      <TableContainer
+        component={Paper}
+        sx={{ maxHeight: "65vh", position: "relative" }}
+      >
+        <Table
+          loading={loading}
+          dataSource={data}
+          pagination={false}
+          columns={[
+            {
+              title: "Avatar",
+              dataIndex: ["image"],
+              render: (value) => (
+                <Stack
+                  position="relative"
+                  sx={{
+                    maxWidth: 50,
+                    maxHeight: 50,
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    ":hover": {
+                      ".overlay-img": {
+                        opacity: 1,
+                      },
+                    },
+                  }}
+                >
+                  <Image
+                    src={value ?? "/img/blank_image.jpg"}
+                    width={50}
+                    height={50}
+                    style={{
+                      maxWidth: 50,
+                      maxHeight: 50,
+                    }}
+                  />
+                  <Stack
+                    className="overlay-img"
+                    position="absolute"
+                    direction="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    sx={{
+                      backgroundColor: "rgba(0, 0, 0, 0.5)",
+                      inset: 0,
+                      opacity: 0,
+                      transition: "all .3s",
+                    }}
+                    component="label"
+                  >
+                    <EyeFilled
+                      onClick={() => setPreview(value)}
+                      style={{
+                        fontSize: "16px",
+                        color: "#fff",
+                        cursor: "pointer",
+                      }}
+                    />
+                  </Stack>
+                </Stack>
+              ),
             },
-          },
-          {
-            title: "Tùy Chọn",
-            dataIndex: ["_id"],
-            render(value) {
-              return (
-                <>
-                  <SwapOutlined onClick={() => swapStatus(value)} />
-                </>
-              );
+            {
+              title: "MSV",
+              dataIndex: ["msv"],
             },
-          },
-        ]}
-      />
-    </TableContainer>
+            {
+              title: "Họ Tên",
+              dataIndex: ["name"],
+            },
+            {
+              title: "UserName",
+              dataIndex: ["username"],
+            },
+            {
+              title: "Chức Vụ",
+              dataIndex: ["role"],
+            },
+            {
+              title: "Trạng Thái",
+              dataIndex: ["deviceLogin"],
+              render(value) {
+                return value > 0 ? (
+                  <Tag color="green">Online</Tag>
+                ) : (
+                  <Tag color="red">Offline</Tag>
+                );
+              },
+            },
+            {
+              title: "Tùy Chọn",
+              dataIndex: ["_id"],
+              render(value) {
+                return (
+                  <Stack direction="row" gap={2}>
+                    <EyeFilled
+                      style={{
+                        color: "#1F51FF",
+                      }}
+                      onClick={() => history.push(`Quan-tri-vien/${value}`)}
+                    />
+                  </Stack>
+                );
+              },
+            },
+          ]}
+        />
+      </TableContainer>
+      {preview && (
+        <Modal
+          open
+          onClose={() => setPreview(undefined)}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: 1280,
+              height: 800,
+              objectFit: "contain",
+            }}
+          >
+            <Image
+              src={preview}
+              style={{
+                aspectRatio: "16/9",
+              }}
+            />
+          </Box>
+        </Modal>
+      )}
+    </>
   );
 };
 

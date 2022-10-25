@@ -9,7 +9,7 @@ import LayoutAdmin from "./layouts/LayoutAdmin";
 // Views
 // ADMIN
 // import AdminPage from "./admin/Admin";
-import 'antd/dist/antd.css';
+import "antd/dist/antd.css";
 import { NotificationContainer } from "react-notifications";
 import "react-notifications/lib/notifications.css";
 import login from "./views/Login";
@@ -29,6 +29,7 @@ import Contact from "./admin/components/Contact";
 import configureStore from "./components/Scanner/store/configStore";
 import RouteGuard from "./utils/RouteGuard";
 import Profile from "./views/profile";
+import DetailUser from "./admin/components/QuanTriVien/[id]";
 
 // import store
 // import store from './store';
@@ -55,54 +56,65 @@ const App = () => {
 
   return (
     <>
-        <Provider {...config}>
-          <ScrollReveal
-            ref={childRef}
-            children={() => (
-                <Switch>
-                  <RouteGuard exact path='/' component={AdminPage} layout={LayoutAdmin}/>
-                  <AppRoute exact path="/loginAdmin" component={login} />
-                  <AppRoute
-                    exact
-                    path="/Dashboard"
-                    component={Dashboard}
-                    layout={LayoutAdmin}
-                  />
-                  <AppRoute
-                    exact
-                    path="/Quan-tri-vien"
-                    component={QTV}
-                    layout={LayoutAdmin}
-                  />
-                  <AppRoute
-                    exact
-                    path="/Blog-Event"
-                    component={BlogAdmin}
-                    layout={LayoutAdmin}
-                  />
-                  <AppRoute
-                    exact
-                    path="/contact"
-                    component={Contact}
-                    layout={LayoutAdmin}
-                  />
-                  <AppRoute
-                    exact
-                    path="/Blog-Event/add"
-                    component={CreateArticle}
-                    layout={LayoutAdmin}
-                  />
-                  <AppRoute
-                    exact
-                    path="/account/profile"
-                    component={Profile}
-                    layout={LayoutAdmin}
-                  />
-                </Switch>
-            )}
-          />
-          <NotificationContainer/>
-        </Provider>
+      <Provider {...config}>
+        <ScrollReveal
+          ref={childRef}
+          children={() => (
+            <Switch>
+              <RouteGuard
+                exact
+                path="/"
+                component={AdminPage}
+                layout={LayoutAdmin}
+              />
+              <AppRoute exact path="/loginAdmin" component={login} />
+              <AppRoute
+                exact
+                path="/Dashboard"
+                component={Dashboard}
+                layout={LayoutAdmin}
+              />
+              <AppRoute
+                exact
+                path="/Quan-tri-vien"
+                component={QTV}
+                layout={LayoutAdmin}
+              />
+              <AppRoute
+                exact
+                path="/Blog-Event"
+                component={BlogAdmin}
+                layout={LayoutAdmin}
+              />
+              <AppRoute
+                exact
+                path="/contact"
+                component={Contact}
+                layout={LayoutAdmin}
+              />
+              <AppRoute
+                exact
+                path="/Blog-Event/add"
+                component={CreateArticle}
+                layout={LayoutAdmin}
+              />
+              <AppRoute
+                exact
+                path="/account/profile"
+                component={Profile}
+                layout={LayoutAdmin}
+              />
+              <AppRoute
+                exact
+                path="/Quan-tri-vien/:id"
+                component={DetailUser}
+                layout={LayoutAdmin}
+              />
+            </Switch>
+          )}
+        />
+        <NotificationContainer />
+      </Provider>
     </>
   );
 };

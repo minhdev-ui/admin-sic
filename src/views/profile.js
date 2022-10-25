@@ -120,12 +120,6 @@ const Profile = () => {
               <CameraOutlined
                 style={{ fontSize: "28px", color: "#fff", cursor: "pointer" }}
               />
-              {/* <Box
-                component="img"
-                src={formik.values["image"].preview}
-                zIndex={999}
-                width="100%"
-              /> */}
               <Box
                 component="input"
                 type="file"

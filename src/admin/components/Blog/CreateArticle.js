@@ -28,7 +28,7 @@ function CreateArticle() {
         tags: tags,
         imageName: obj.image.name || "",
         image: url || "",
-        author: "CLB Tin học sinh viên",
+        author: JSON.parse(localStorage.getItem("account")).name,
       });
       createNotification("success", "Tạo thành công");
       setTimeout(() => {

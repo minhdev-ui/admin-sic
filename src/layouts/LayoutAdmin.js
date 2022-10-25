@@ -110,7 +110,7 @@ const LayoutAdmin = ({ children }) => {
     getItem("Home", "/", <HomeOutlined />),
     getItem("Dashboard", "/Dashboard", <PieChartOutlined />),
     getItem(
-      "Admin",
+      "Users",
       "/Quan-tri-vien",
       <UserOutlined />,
       tokenAdmin === "undefined" ? true : false
