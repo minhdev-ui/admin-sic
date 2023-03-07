@@ -1,8 +1,12 @@
 @font-face {
-    font-family: 'Square721 BT';
-    src: url('/public/font/Squ721Rm.ttf');
+  font-family: "Square721 BT";
+  src: url("/public/font/Squ721Rm.ttf");
 }
 
 body {
-    font-family: 'Square721 BT' !important;
+  font-family: "Square721 BT" !important;
+}
+
+.quill .ql-editor {
+  color: #9ca9b3 !important;
 }

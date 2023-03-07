@@ -1,8 +1,8 @@
 /* eslint-disable default-case */
 import { Button } from "@mui/material";
 import { Field, Form, Formik } from "formik";
-import React, { useEffect, useMemo, useState } from "react";
-import ReactQuill from "react-quill";
+import React, { useEffect, useMemo, useState, useRef } from "react";
+import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import * as Yup from "yup";
 import createNotification from "../../../components/elements/Nofication";
@@ -10,9 +10,47 @@ import createNotification from "../../../components/elements/Nofication";
 import axios from "axios";
 import dbConfig from "../../../db.config";
 import handleUploadImage from "../../../utils/uploadImage";
+import ImageUploader from "quill-image-uploader";
+
+Quill.register("modules/imageUploader", ImageUploader);
+
 function CreateArticle() {
   const [imagePreview, setImagePreview] = useState("");
   const [url, setUrl] = useState("");
+  const quillRef = useRef(null);
+
+  const imageHandler = (e) => {
+    const editor = quillRef.current.getEditor();
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+    input.onchange = async () => {
+      const file = input.files[0];
+      if (/^image\//.test(file.type)) {
+        const url = async (file) => {
+          const bodyFormData = new FormData();
+          bodyFormData.append("image", file);
+          const response = await axios({
+            method: "POST",
+            url: "https://api.imgbb.com/1/upload?key=fbccfab96dc9f2c5249a9f2fe1ed677f",
+            data: bodyFormData,
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+          return response.data.data.url;
+        };
+        url(file).then((ress) => {
+          editor.insertEmbed(
+            quillRef.current.getEditorSelection().index,
+            "image",
+            `${ress}`
+          );
+        });
+      }
+    };
+  };
 
   const handleSubmit = async (obj) => {
     if (!obj) return null;
@@ -32,7 +70,7 @@ function CreateArticle() {
       });
       createNotification("success", "Tạo thành công");
       setTimeout(() => {
-        window.location.reload();
+        window.location.replace('/Blog-Event');
       }, 2000);
     } catch (err) {
       createNotification("error", "Tạo thất bại");
@@ -51,17 +89,30 @@ function CreateArticle() {
       imagePreview && URL.revokeObjectURL(imagePreview.preview);
     };
   }, [imagePreview]);
+
   const modules = useMemo(
     () => ({
-      toolbar: [
-        ["bold", "italic", "underline", "strike"],
-        ["blockquote"],
-        [{ header: 1 }, { header: 2 }],
-        [{ list: "ordered" }, { list: "bullet" }],
-        [{ header: [1, 2, 3, 4, 5, 6, false] }],
-        ["link"],
-        [{ color: ["#FFFFFF", "#e60000"] }],
-      ],
+      toolbar: {
+        container: [
+          ["bold", "italic", "underline", "strike"],
+          ["blockquote"],
+          [{ header: 1 }, { header: 2 }],
+          [{ list: "ordered" }, { list: "bullet" }],
+          [{ header: [1, 2, 3, 4, 5, 6, false] }],
+          ["link", "image"],
+          [
+            { align: "" },
+            { align: "center" },
+            { align: "right" },
+            { align: "justify" },
+          ],
+          [{ color: ["#FFFFFF", "#e60000", "#9ca9b3"] }],
+          ["code-block"],
+        ],
+        handlers: {
+          image: imageHandler,
+        },
+      },
     }),
     []
   );
@@ -184,6 +235,7 @@ function CreateArticle() {
               <Field name="text">
                 {({ field }) => (
                   <ReactQuill
+                    ref={quillRef}
                     theme="snow"
                     modules={modules}
                     value={field.value}
