@@ -7,10 +7,10 @@
   padding-right: 5px;
 }
 .input {
-  padding: 20px 10px;
+  padding: 16px 8px;
   margin: 10px 0;
   border: 1px solid #ddd;
-  background-color: #ccc !important;
+  background-color: #e2e0e071 !important;
   transition: 0.3s linear;
   &:focus {
     background-color: #fff !important;
@@ -21,6 +21,7 @@
 }
 ::placeholder {
   color: rgba(0, 0, 0, 0.7) !important;
+  font-size: 16px !important;
 }
 .article_name_tag_container {
   display: flex;

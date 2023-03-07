@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import DetailArticle from "./DetailArticle";
 import UpdateArticle from "./UpdateArticle";
 import { AiFillDelete } from "react-icons/ai";
@@ -18,13 +18,12 @@ import {
   TableRow,
 } from "@mui/material";
 import { AiFillCloseCircle, AiOutlineSearch } from "react-icons/ai";
-import { deleteDoc, doc } from "firebase/firestore";
 import createNotification from "../../../components/elements/Nofication";
-// import db from "../../../db.config";
 import { deleteObject, getStorage, ref } from "firebase/storage";
 import axios from "axios";
+import Loading from "../../../components/elements/Loading";
 
-const ListArticle = ({ data, sortedFunc }) => {
+const ListArticle = ({ data, sortedFunc, loading }) => {
   // Article List Data from firebase
   const [article, setArticle] = useState([]);
 
@@ -168,77 +167,87 @@ const ListArticle = ({ data, sortedFunc }) => {
           <Link to="/Blog-Event/add" className="article_add_button">
             +
           </Link>
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650, margin: 0 }} aria-label="simple table">
-              <TableHead
-                sx={{
-                  backgroundColor: "#6B6DFF",
-                  ["th"]: {
-                    color: "#fff",
-                  },
-                }}
+
+          {loading ? (
+            <Loading />
+          ) : (
+            <TableContainer component={Paper}>
+              <Table
+                sx={{ minWidth: 650, margin: 0 }}
+                aria-label="simple table"
               >
-                <TableRow>
-                  <TableCell align="center"></TableCell>
-                  <TableCell align="center">Tiêu đề</TableCell>
-                  <TableCell align="center">Phân trang</TableCell>
-                  <TableCell align="center">Tuỳ chọn</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {article.length > 0 && article ? (
-                  article
-                    .filter((value) => {
-                      if (searchValue === "") {
-                        return value;
-                      } else if (
-                        value.title
-                          .toLowerCase()
-                          .includes(searchValue.toLowerCase())
-                      ) {
-                        return value;
-                      }
-                    })
-                    .map((row, index) => {
-                      return (
-                        <TableRow
-                          key={row.id}
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                          }}
-                        >
-                          <TableCell align="center">{index + 1}</TableCell>
-                          <TableCell align="center">{row.title}</TableCell>
-                          <TableCell align="center">{row.categorize}</TableCell>
-                          <TableCell align="center">
-                            <div className="article_admin_list_option">
-                              <AiFillDelete
-                                className="article_admin_option delete"
-                                onClick={() => {
-                                  handleDeleteArticle(row._id, row.imageName);
-                                }}
-                              ></AiFillDelete>
-                              <BiDetail
-                                className="article_admin_option"
-                                onClick={() => handleShowDetail(row)}
-                              ></BiDetail>
-                              <BsFillPenFill
-                                className="article_admin_option"
-                                onClick={() => handleUpdate(row)}
-                              ></BsFillPenFill>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })
-                ) : (
-                  <TableCell colSpan={4} align="center">
-                    Hiện không có bài viết nào!
-                  </TableCell>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                <TableHead
+                  sx={{
+                    backgroundColor: "#6B6DFF",
+                    th: {
+                      color: "#fff",
+                    },
+                  }}
+                >
+                  <TableRow>
+                    <TableCell align="center"></TableCell>
+                    <TableCell align="center">Tiêu đề</TableCell>
+                    <TableCell align="center">Phân trang</TableCell>
+                    <TableCell align="center">Tuỳ chọn</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {article.length > 0 && article ? (
+                    article
+                      .filter((value) => {
+                        if (searchValue === "") {
+                          return value;
+                        } else if (
+                          value.title
+                            .toLowerCase()
+                            .includes(searchValue.toLowerCase())
+                        ) {
+                          return value;
+                        }
+                      })
+                      .map((row, index) => {
+                        return (
+                          <TableRow
+                            key={row.id}
+                            sx={{
+                              "&:last-child td, &:last-child th": { border: 0 },
+                            }}
+                          >
+                            <TableCell align="center">{index + 1}</TableCell>
+                            <TableCell align="center">{row.title}</TableCell>
+                            <TableCell align="center">
+                              {row.categorize}
+                            </TableCell>
+                            <TableCell align="center">
+                              <div className="article_admin_list_option">
+                                <AiFillDelete
+                                  className="article_admin_option delete"
+                                  onClick={() => {
+                                    handleDeleteArticle(row._id, row.imageName);
+                                  }}
+                                ></AiFillDelete>
+                                <BiDetail
+                                  className="article_admin_option"
+                                  onClick={() => handleShowDetail(row)}
+                                ></BiDetail>
+                                <BsFillPenFill
+                                  className="article_admin_option"
+                                  onClick={() => handleUpdate(row)}
+                                ></BsFillPenFill>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                  ) : (
+                    <TableCell colSpan={4} align="center">
+                      Hiện không có bài viết nào!
+                    </TableCell>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </>
       )}
     </div>
